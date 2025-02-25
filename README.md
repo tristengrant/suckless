@@ -1,3 +1,8 @@
 # Suckless
 
-I'm trying out DWM and Dmenu (might also use ST). No Patches have been installed yet.
+I'm trying out DWM and Dmenu (might also try ST).
+
+## Patches Installed:
+### DWM:
+ - dwm-alwayscenter-20200625-f04cac6.diff
+
