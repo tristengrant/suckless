@@ -1,6 +1,6 @@
 # Suckless
 
-I'm trying out DWM and Dmenu (might also try ST).
+I'm trying out DWM and dMenu, DWMblocks (might also try ST).
 
 ## Patches Installed:
 ### DWM:
