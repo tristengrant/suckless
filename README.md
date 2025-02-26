@@ -2,13 +2,13 @@
 
 I'm trying out DWM and dMenu (might also try ST).
 
-## DWM Patches
+## Patches
+- statuscmd
 - pertag
 - defaultlayoutpermonitor
 - statusallmons
 - bottomstack
 - move stack
-- attachabove
 - alwayscenter
 - multimonitorscratchpads
 - actualfullscreen
@@ -17,5 +17,3 @@ I'm trying out DWM and dMenu (might also try ST).
 - focusonnetactive
 - warp
 - steam
-- exitmenu
-- restartsig
