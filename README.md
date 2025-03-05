@@ -14,3 +14,7 @@
 11 [dwm-restoreafterrestart-20220709-d3f93c7.diff](https://dwm.suckless.org/patches/restoreafterrestart/)  
 12 [dwm-scratchpad-20240321-061e9fe.diff](https://dwm.suckless.org/patches/scratchpad/)  
 13 [dwm-dynamicswallow-20240320-061e9fe.diff](https://dwm.suckless.org/patches/dynamicswallow/)  
+
+## [Dmenu](https://tools.suckless.org/dmenu/) Patches
+01 [dmenu-numbers-20220512-28fb3e2.diff](https://tools.suckless.org/dmenu/patches/numbers/)  
+01 [dmenu-qalc-5.2.diff](https://tools.suckless.org/dmenu/patches/qalc/)  
