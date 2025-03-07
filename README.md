@@ -12,8 +12,9 @@
 09 [dwm-noborderselflickerfix-2022042627-d93ff48803f0.dif](https://dwm.suckless.org/patches/noborder/)  
 10 [dwm-restartsig-20180523-6.2.diff](https://dwm.suckless.org/patches/restartsig/)  
 11 [dwm-restoreafterrestart-20220709-d3f93c7.diff](https://dwm.suckless.org/patches/restoreafterrestart/)  
-12 [dwm-scratchpad-20240321-061e9fe.diff](https://dwm.suckless.org/patches/scratchpad/)  
-13 [dwm-dynamicswallow-20240320-061e9fe.diff](https://dwm.suckless.org/patches/dynamicswallow/)  
+dwm-swallow-20201211-61bb8b2.diff12 [dwm-scratchpad-20240321-061e9fe.diff](https://dwm.suckless.org/patches/scratchpad/)  
+13 [dwm-swallow-20201211-61bb8b2.diff](https://dwm.suckless.org/patches/swallow/)  
+14 [dwm-statuscmd-20241009-8933ebc.diff](https://dwm.suckless.org/patches/statuscmd/)  
 
 ## [Dmenu](https://tools.suckless.org/dmenu/) Patches
 01 [dmenu-numbers-20220512-28fb3e2.diff](https://tools.suckless.org/dmenu/patches/numbers/)  
