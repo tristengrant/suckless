@@ -28,12 +28,10 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
-	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 },
-	{ "mpv",     NULL,     NULL,           0,         1,          0,           0,        -1 },
+	{ "st",      NULL,     NULL,           0,         0,          1,           1,        -1 },
+	{ "mpv",     "gl",     NULL,           0,         1,          0,           0,        -1 },
         { "kitty",   NULL,     NULL,           0,         0,          1,           1,        -1 },
-	{ "sxiv",    NULL,     NULL,           0,         1,          0,           1,        -1 },
+	{ "nsxiv",   "nsxiv",  "Nsxiv",        0,         0,          0,           1,        -1 },
 	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
 
@@ -75,14 +73,15 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "kitty", NULL };
 static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+/*static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", NULL };*/
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "140x34", "-e", "ncmpcpp", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_r,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-        { MODKEY,                       XK_n,      togglescratch,  {.v = scratchpadcmd } },
+        { MODKEY,                       XK_m,      togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
