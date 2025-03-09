@@ -13,10 +13,34 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
+static const char col_black0[]      = "#000000";
+static const char col_black1[]      = "#1d2021";
+static const char col_black2[]      = "#282828";
+static const char col_black3[]      = "#3c3836";
+static const char col_black4[]      = "#32302f";
+static const char col_white1[]      = "#ebdbb2";
+static const char col_white2[]      = "#665c54";
+static const char col_white3[]      = "#a89984";
+static const char col_red[]         = "#cc241d";
+
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { col_white3, col_black0, col_black1 },
+        [SchemeSel]  = { col_white1, col_black3,  col_white1  },
+};
+
+typedef struct {
+       const char *name;
+       const void *cmd;
+} Sp;
+const char *spcmd1[] = {"st", "-n", "spterm", "-g", "140x34", NULL };
+const char *spcmd2[] = {"st", "-n", "spfm", "-g", "140x34", "-e", "nnn", NULL };
+const char *spcmd3[] = {"st", "-n", "spmusic", "-g", "140x34", "-e", "ncmpcpp", NULL };
+static Sp scratchpads[] = {
+       /* name          cmd  */
+       {"spterm",      spcmd1},
+       {"spranger",    spcmd2},
+       {"spmusic",     spcmd3},
 };
 
 /* tagging */
@@ -27,12 +51,15 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "st",      NULL,     NULL,           0,         0,          1,           1,        -1 },
-	{ "mpv",     "gl",     NULL,           0,         1,          0,           0,        -1 },
-        { "kitty",   NULL,     NULL,           0,         0,          1,           1,        -1 },
-	{ "nsxiv",   "nsxiv",  "Nsxiv",        0,         0,          0,           1,        -1 },
-	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	/* class     instance  	title           tags mask  isfloating  isterminal  noswallow  monitor */
+	{ "Firefox", NULL,     	NULL,           1 << 8,    0,          0,          -1,        -1 },
+	{ "St",      NULL,     	NULL,           0,         0,          1,           0,        -1 },
+	{ "Nsxiv",   "nsxiv",   NULL,           0,         1,          0,           0,        -1 },
+	{ "mpv",     "gl",      NULL,           0,         1,          0,           0,        -1 },
+	{ NULL,      NULL,     	"Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	{ NULL,      "spterm", 	NULL,           SPTAG(0),  1,          1,           0,        -1 },
+	{ NULL,      "spfm",   	NULL,           SPTAG(1),  1,          1,           0,        -1 },
+        { NULL,      "spmusic",	NULL,           SPTAG(2),  1,          1,           0,        -1 },
 };
 
 /* layout(s) */
@@ -70,18 +97,15 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "kitty", NULL };
-static const char scratchpadname[] = "scratchpad";
-/*static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", NULL };*/
-static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "140x34", "-e", "ncmpcpp", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
+static const char *termcmd[]  = { "st", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_r,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-        { MODKEY,                       XK_m,      togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
@@ -90,15 +114,26 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
+	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_q,      killclient,     {0} },
-	{ MODKEY,                       XK_grave,  spawn,          SHCMD("~/Scripts/dmenu-power") },
-	{ MODKEY|ControlMask,           XK_f,  	   togglefloating, {0} },
-	{ MODKEY|ControlMask,           XK_0,      view,           {.ui = ~0 } },
+	{ MODKEY|ControlMask,           XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY|ControlMask,           XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY|ControlMask,           XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY|ControlMask,           XK_u,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ControlMask,           XK_h,      setlayout,      {.v = &layouts[4]} },
+	{ MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
+	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY|ControlMask,           XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_comma,  focusmon,       {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY|ControlMask,           XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ShiftMask,    		XK_Return, togglescratch,  {.ui = 0 } },
+	{ MODKEY|ShiftMask,   		XK_f,	   togglescratch,  {.ui = 1 } },
+	{ MODKEY|ShiftMask,   		XK_m,	   togglescratch,  {.ui = 2 } },
+	{ MODKEY,                       XK_x,      quit,           {0} },
+        { MODKEY,                       XK_grave,  spawn,          SHCMD("~/Scripts/dmenu-power") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -122,7 +157,7 @@ static const Button buttons[] = {
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+	{ ClkClientWin,         MODKEY,         Button1,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
