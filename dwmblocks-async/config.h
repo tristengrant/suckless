@@ -18,7 +18,7 @@
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
 #define BLOCKS(X)             \
-    X("", "~/Scripts/weather", 1800, 9) \
+    X("", "~/Github/scripts/weather", 1800,14) \
     X("", "date '+%a %b %d %I:%M%p '", 60, 10)
 
 #endif  // CONFIG_H
