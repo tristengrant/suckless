@@ -5,8 +5,8 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "JetBrains Mono:size=12" };
-static const char dmenufont[]       = "JetBrains Mono:size=12";
+static const char *fonts[]          = { "JetBrains Mono:size=13" };
+static const char dmenufont[]       = "JetBrains Mono:size=13";
 static const char col_black0[]      = "#000000";
 static const char col_black1[]      = "#1d2021";
 static const char col_black2[]      = "#282828";
@@ -18,9 +18,9 @@ static const char col_white3[]      = "#a89984";
 static const char col_red[]         = "#cc241d";
 
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_white3, col_black0, col_black1 },
-	[SchemeSel]  = { col_white1, col_black3,  col_white1  },
+  /*               fg         bg         border   */
+  [SchemeNorm] = { col_white3, col_black0, col_black1 },
+  [SchemeSel]  = { col_white1, col_black3,  col_white1  },
 };
 
 typedef struct {
@@ -32,9 +32,9 @@ const char *spcmd2[] = {"st", "-n", "spfm", "-g", "140x34", "-e", "nnn", NULL };
 const char *spcmd3[] = {"st", "-n", "spmusic", "-g", "140x34", "-e", "ncmpcpp", NULL };
 static Sp scratchpads[] = {
        /* name          cmd  */
-       {"spterm",     	spcmd1},
-       {"spfm",  			  spcmd2},
-       {"spmusic",    	spcmd3},
+       {"spterm",      spcmd1},
+       {"spranger",    spcmd2},
+       {"spmusic",     spcmd3},
 };
 
 /* tagging */
@@ -44,15 +44,15 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    	title       tags mask     isfloating   monitor */
-	{ "Krita",  	NULL,					NULL,				0,						1,			 		-1 },
-	{ "Zen",  		NULL,					NULL,				1 << 8,				0,			 		-1 },
-	{ "St",       NULL,         NULL,       0,            0,          -1 },
-	{ "Nsxiv",    "nsxiv",      NULL,       0,            1,          -1 },
-	{ "mpv",      "gl",         NULL,       0,            1,          -1 },
-	{ NULL,		  	"spterm",			NULL,				SPTAG(0),			1,			 		-1 },
-	{ NULL,		  	"spfm",				NULL,				SPTAG(1),			1,			 		-1 },
-	{ NULL,		  	"spmusic",		NULL,				SPTAG(2),			1,			 		-1 },
+/* class      instance      title       tags mask     isfloating   monitor */
+  { "Krita",    NULL,         NULL,       0,            1,          -1 },
+  { "Zen",      NULL,         NULL,       1 << 8,       0,          -1 },
+  { "St",       NULL,         NULL,       0,            0,          -1 },
+  { "Nsxiv",    "nsxiv",      NULL,       0,            1,          -1 },
+  { "mpv",      "gl",         NULL,       0,            1,          -1 },
+  { NULL,       "spterm",     NULL,       SPTAG(0),     1,          -1 },
+  { NULL,       "spfm",       NULL,       SPTAG(1),     1,          -1 },
+  { NULL,       "spmusic",    NULL,       SPTAG(2),     0,          -1 },
 };
 
 /* layout(s) */
@@ -60,11 +60,6 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-
-static const int lpm[] = {
-        /* Index of preferred layout], if LENGTH(lpm)<#monitors -> default layout */
-        0, 4
-};
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -88,7 +83,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-p", "Run:", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 #include "movestack.c"
@@ -105,13 +100,14 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
+	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY|ControlMask,           XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY|ControlMask,           XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY|ControlMask,           XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY|ControlMask,           XK_u,      setlayout,      {.v = &layouts[3]} },
-	{ MODKEY|ControlMask,           XK_h,      setlayout,      {.v = &layouts[4]} },
+	{ MODKEY|ControlMask,           XK_v,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY|ControlMask,           XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
@@ -121,10 +117,8 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY|ShiftMask,        			XK_Return, togglescratch,  {.ui = 0 } },
-	{ MODKEY|ShiftMask,        			XK_f,	     togglescratch,  {.ui = 1 } },
-	{ MODKEY|ShiftMask,        			XK_m,	     togglescratch,  {.ui = 2 } },
-	{ MODKEY|ShiftMask,             XK_x,      quit,           {0} },
-	{ MODKEY,                       XK_grave,  spawn,          SHCMD("~/Github/scripts/dmenu-power") },
+	{ MODKEY|ShiftMask,        			XK_f, 	   togglescratch,  {.ui = 1 } },
+	{ MODKEY|ShiftMask,        			XK_m, 	   togglescratch,  {.ui = 2 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -134,6 +128,8 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	{ MODKEY|ShiftMask,             XK_x,      quit,           {0} },
+	{ MODKEY,                       XK_grave,  spawn,          SHCMD("~/Github/scripts/dmenu-power") },
 };
 
 /* button definitions */

@@ -146,7 +146,6 @@ typedef struct {
 } Rule;
 
 /* function declarations */
-static void applydefaultlayouts();
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
@@ -294,30 +293,6 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 /* function implementations */
 void
-applydefaultlayouts()
-{
-    Monitor *m;
-    int i = 0;
-    for (m = mons; m; m = m->next) {
-        if (i < LENGTH(lpm)) {
-            // Apply default layout for primary monitor
-            m->lt[0] = &layouts[lpm[i]];
-            m->lt[1] = &layouts[(lpm[i] + 1) % LENGTH(layouts)];
-            strncpy(m->ltsymbol, layouts[i].symbol, sizeof m->ltsymbol);
-        }
-        
-        // Set layout for the secondary monitor (m->num == 1 for secondary)
-        if (m->num == 1) { // Secondary monitor
-            // Always use layout 4 for the secondary monitor
-            m->lt[0] = &layouts[4]; // Always set layout 4 for the secondary monitor
-            m->lt[1] = &layouts[(4 + 1) % LENGTH(layouts)]; // Optional: use layout 5 for the secondary monitor's second layout
-            strncpy(m->ltsymbol, layouts[4].symbol, sizeof m->ltsymbol);
-        }
-        i++;
-    }
-}
-
-void
 applyrules(Client *c)
 {
 	const char *class, *instance;
@@ -429,7 +404,6 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
 void
 arrange(Monitor *m)
 {
-	XEvent ev;
 	if (m)
 		showhide(m->stack);
 	else for (m = mons; m; m = m->next)
@@ -437,12 +411,8 @@ arrange(Monitor *m)
 	if (m) {
 		arrangemon(m);
 		restack(m);
-	} else {
-		for (m = mons; m; m = m->next)
-			arrangemon(m);
-		XSync(dpy, False);
-		while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
-	}
+	} else for (m = mons; m; m = m->next)
+		arrangemon(m);
 }
 
 void
@@ -806,10 +776,9 @@ drawbar(Monitor *m)
 				urg & 1 << i);
 		x += w;
 	}
-	// Comment out to hide the layout icons
-	//w = TEXTW(m->ltsymbol);
-	//drw_setscheme(drw, scheme[SchemeNorm]);
-	//x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
+	w = TEXTW(m->ltsymbol);
+	drw_setscheme(drw, scheme[SchemeNorm]);
+	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - x) > bh) {
 		if (m->sel) {
@@ -881,7 +850,7 @@ focus(Client *c)
 		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
 	} else {
-		XSetInputFocus(dpy, selmon->barwin, RevertToPointerRoot, CurrentTime);
+		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
 	selmon->sel = c;
@@ -2063,7 +2032,6 @@ updategeom(void)
 				selmon = mons;
 			cleanupmon(m);
 		}
-        applydefaultlayouts();
 		free(unique);
 	} else
 #endif /* XINERAMA */
@@ -2195,44 +2163,39 @@ updatewmhints(Client *c)
 void
 view(const Arg *arg)
 {
-    int i;
-    unsigned int tmptag;
-    if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
-        return;
-    selmon->seltags ^= 1; /* toggle sel tagset */
-    if (arg->ui & TAGMASK) {
-        selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
-        selmon->pertag->prevtag = selmon->pertag->curtag;
-        if (arg->ui == ~0)
-            selmon->pertag->curtag = 0;
-        else {
-            for (i = 0; !(arg->ui & 1 << i); i++) ;
-            selmon->pertag->curtag = i + 1;
-        }
-    } else {
-        tmptag = selmon->pertag->prevtag;
-        selmon->pertag->prevtag = selmon->pertag->curtag;
-        selmon->pertag->curtag = tmptag;
-    }
-    selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
-    selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
-    selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
-    selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
-    selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
-    if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
-        togglebar(NULL);
-    focus(NULL);
-    arrange(selmon);
+	int i;
+	unsigned int tmptag;
 
-    // Enforce layout 4 on the secondary monitor
-    Monitor *m;
-    for (m = mons; m; m = m->next) {
-        if (m->num == 1) { // If it's the secondary monitor
-            m->lt[0] = &layouts[4]; // Always use layout 4 for the secondary monitor
-            m->lt[1] = &layouts[5]; // Optionally, choose layout 5 for the secondary monitor's second layout
-            strncpy(m->ltsymbol, layouts[4].symbol, sizeof m->ltsymbol); // Set symbol to layout 4
-        }
-    }
+	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+		return;
+	selmon->seltags ^= 1; /* toggle sel tagset */
+	if (arg->ui & TAGMASK) {
+		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+		selmon->pertag->prevtag = selmon->pertag->curtag;
+
+		if (arg->ui == ~0)
+			selmon->pertag->curtag = 0;
+		else {
+			for (i = 0; !(arg->ui & 1 << i); i++) ;
+			selmon->pertag->curtag = i + 1;
+		}
+	} else {
+		tmptag = selmon->pertag->prevtag;
+		selmon->pertag->prevtag = selmon->pertag->curtag;
+		selmon->pertag->curtag = tmptag;
+	}
+
+	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
+	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
+	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
+	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
+	selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
+
+	if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
+		togglebar(NULL);
+
+	focus(NULL);
+	arrange(selmon);
 }
 
 Client *
