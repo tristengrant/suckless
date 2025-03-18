@@ -146,6 +146,7 @@ typedef struct {
 } Rule;
 
 /* function declarations */
+static void applydefaultlayouts();
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
@@ -292,6 +293,37 @@ struct Pertag {
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 /* function implementations */
+void
+applydefaultlayouts()
+{
+    Monitor *m;
+    int i = 0;
+    for (m = mons; m; m = m->next) {
+        if (i < LENGTH(lpm)) {
+            // Apply default layout for primary monitor
+            m->lt[0] = &layouts[lpm[i]];
+            m->lt[1] = &layouts[(lpm[i] + 1) % LENGTH(layouts)];
+            strncpy(m->ltsymbol, layouts[lpm[i]].symbol, sizeof m->ltsymbol);
+        }
+
+        // Set layout 4 for the secondary monitor (always)
+        if (m->num == 1) {  // Secondary monitor
+            m->lt[0] = &layouts[4];  // Enforce layout 4
+            m->lt[1] = &layouts[(4 + 1) % LENGTH(layouts)];  // Secondary layout
+            strncpy(m->ltsymbol, layouts[4].symbol, sizeof m->ltsymbol);
+
+            // Ensure per-tag layouts default to layout 4 on secondary monitor
+            if (m->pertag) {  // Safety check
+                for (int j = 0; j < LENGTH(tags); j++) {
+                    m->pertag->ltidxs[j][0] = &layouts[4];  // Always use layout 4
+                    m->pertag->ltidxs[j][1] = &layouts[5];  // Optionally use layout 5
+                }
+            }
+        }
+        i++;
+    }
+}
+
 void
 applyrules(Client *c)
 {
@@ -2032,6 +2064,7 @@ updategeom(void)
 				selmon = mons;
 			cleanupmon(m);
 		}
+        applydefaultlayouts();
 		free(unique);
 	} else
 #endif /* XINERAMA */
