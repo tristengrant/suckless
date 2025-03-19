@@ -27,9 +27,9 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = {"st", "-n", "spterm", "-g", "140x34", NULL };
-const char *spcmd2[] = {"st", "-n", "spfm", "-g", "140x34", "-e", "nnn", NULL };
-/*const char *spcmd3[] = {"st", "-n", "spmusic", "-g", "140x34", "-e", "ncmpcpp", NULL };*/
+const char *spcmd1[] = {"st", "-n", "spterm", "-g", "115x34", NULL };
+const char *spcmd2[] = {"st", "-n", "spfm", "-g", "115x34", "-e", "nnn", NULL };
+const char *spcmd3[] = {"st", "-n", "spmusic", "-g", "115x34", "-e", "ncmpcpp", NULL };
 static Sp scratchpads[] = {
        /* name          cmd  */
        {"spterm",      spcmd1},
@@ -52,7 +52,7 @@ static const Rule rules[] = {
   { "mpv",      "gl",         NULL,       0,            1,          -1 },
   { NULL,       "spterm",     NULL,       SPTAG(0),     1,          -1 },
   { NULL,       "spfm",       NULL,       SPTAG(1),     1,          -1 },
-  /*{ NULL,       "spmusic",    NULL,       SPTAG(2),     1,          -1 },*/
+  { NULL,       "spmusic",    NULL,       SPTAG(2),     1,          -1 },
 };
 
 /* layout(s) */
@@ -123,7 +123,7 @@ static const Key keys[] = {
   { MODKEY|ControlMask,           XK_period, tagmon,         {.i = +1 } },
   { MODKEY|ShiftMask,             XK_Return, togglescratch,  {.ui = 0 } },
   { MODKEY|ShiftMask,             XK_f,      togglescratch,  {.ui = 1 } },
-  /*{ MODKEY|ShiftMask,             XK_m,      togglescratch,  {.ui = 2 } },*/
+  { MODKEY|ShiftMask,             XK_m,      togglescratch,  {.ui = 2 } },
   TAGKEYS(                        XK_1,                      0)
   TAGKEYS(                        XK_2,                      1)
   TAGKEYS(                        XK_3,                      2)
