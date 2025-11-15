@@ -11,6 +11,7 @@ COM =\
 	components/cpu\
 	components/datetime\
 	components/disk\
+	components/dyn_battery\
 	components/entropy\
 	components/hostname\
 	components/ip\

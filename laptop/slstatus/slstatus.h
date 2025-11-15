@@ -21,6 +21,9 @@ const char *disk_perc(const char *path);
 const char *disk_total(const char *path);
 const char *disk_used(const char *path);
 
+/* dyn_battery */
+const char *dyn_battery(const char *fmt);
+
 /* entropy */
 const char *entropy(const char *unused);
 

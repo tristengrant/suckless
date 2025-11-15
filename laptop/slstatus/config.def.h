@@ -26,6 +26,9 @@ static const char unknown_str[] = "n/a";
  * disk_perc           disk usage in percent           mountpoint path (/)
  * disk_total          total disk space in GB          mountpoint path (/)
  * disk_used           used disk space in GB           mountpoint path (/)
+ * dyn_battery         displays the name, state and    format string (%u, %s,
+ *                     capacity of all detected        %s). order is important,
+ *                     batteries                       and matches description.
  * entropy             available entropy               NULL
  * gid                 GID of current user             NULL
  * hostname            hostname                        NULL
@@ -64,10 +67,12 @@ static const char unknown_str[] = "n/a";
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
+
 static const struct arg args[] = {
-	/* function format          argument */
-	{ cpu_perc,           " CPU %s%% ",  NULL },
-  { ram_perc,           " RAM %s%% ",  NULL },
-  { disk_perc,          " DSK %s%% ",  "/" },
-  { datetime,           " %s ",        "%a %b %d  %I:%M%P" },
+	/* function           format              argument */
+  { dyn_battery,        " BAT %u%% (%s) ",   "%u %s %s" },
+	{ cpu_perc,           " CPU %s%% ",       NULL },
+  { ram_perc,           " RAM %s%% ",       NULL },
+  { disk_perc,          " DSK %s%% ",       "/" },
+  { datetime,           " %s ",             "%a %b %d  %I:%M%P" },
 };
