@@ -13,6 +13,7 @@ This is the Suckless.org software I use for my Linux systems.
 7. dwm-swallow-6.3.diff
 8. dwm-alwayscenter-20200625-f04cac6.diff
 9. dwm-noborderselflickerfix-2022042627-d93ff48803f0.diff
+10. dwm-statuscmd-20241009-8933ebc.diff
 
 ## St Patches (in order of patching)
 

@@ -66,7 +66,7 @@ static const char unknown_str[] = "n/a";
  */
 static const struct arg args[] = {
 	/* function format          argument */
-  { run_command,        " $s ",        "~/Projects/scripts/battery_status.sh"}
+  { run_command,        " $s ",        "sb_music"}
 	{ cpu_perc,           " CPU %s%% ",  NULL },
   { ram_perc,           " RAM %s%% ",  NULL },
   { disk_perc,          " DSK %s%% ",  "/" },
