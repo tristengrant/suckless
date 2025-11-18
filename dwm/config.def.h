@@ -16,7 +16,7 @@ static const char col_cyan[]        = "#005577";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_cyan,  col_gray3  },
 };
 
 typedef struct {
@@ -111,11 +111,11 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY|ControlMask,		       	XK_Return, togglescratch,  {.ui = 0 } }, // spterm
-	{ MODKEY|ControlMask,	      		XK_m,  	   togglescratch,  {.ui = 1 } }, // spncmpcpp
-  { 0,                            XK_Print,  spawn,          SHCMD("flameshot gui") },
-  { ShiftMask,                    XK_Print,  spawn,          SHCMD("flameshot screen") },
-  { MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
+	{ MODKEY|ControlMask,	       	XK_Return, togglescratch,  {.ui = 0 } }, // spterm
+	{ MODKEY|ControlMask,      		XK_m,  	   togglescratch,  {.ui = 1 } }, // spncmpcpp
+    { 0,                            XK_Print,  spawn,          SHCMD("flameshot gui") },
+    { ShiftMask,                    XK_Print,  spawn,          SHCMD("flameshot screen") },
+    { MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -138,9 +138,9 @@ static const Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
-  { ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
-  { ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
-  { ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6} },
+    { ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
+    { ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
+    { ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button1,        resizemouse,    {0} },
