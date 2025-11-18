@@ -221,8 +221,8 @@ static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
-static void sigstatusbar(const Arg *arg);
 static int solitary(Client *c);
+static void sigstatusbar(const Arg *arg);
 static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -2242,6 +2242,7 @@ updategeom(void)
           attachBelow(c);
         else
           attach(c);
+
 				attachstack(c);
 			}
 			if (m == selmon)
