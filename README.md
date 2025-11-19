@@ -23,3 +23,9 @@ No patches applied yet.
 # Slock
 1. slock-capscolor-20220921-35633d4.diff
 2. slock-git-20161012-control-clear.diff
+
+# St
+1. st-anysize-20220718-baa9357.diff
+2. st-bold-is-not-bright-20190127-3be4cf1.diff
+3. st-boxdraw_v2-0.8.5.diff
+4. st-charoffsets-20220311-0.8.5.diff

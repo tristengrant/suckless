@@ -32,9 +32,8 @@ static const Rule rules[] = {
 	{ "Firefox", NULL,     NULL,           0,         0,          0,          -1,        -1,       0 },
 	{ "Kitty",   NULL,     NULL,           0,         0,          1,           0,        -1,       0 },
 	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1,       0 }, /* xev */
-/*{ NULL,      NULL,     "scratchpad"    0,         0,          1,           1,        -1,       's' }, */
   { NULL,      NULL,     "scratchpad",   0,         1,          1,           1,        -1,       't' }, /* spterm */
-  { NULL,      NULL,     "spncmpcpp",    0,         1,          1,           1,        -1,       'm' }, /* music */
+  { NULL,      NULL,     "ncmpcpp",      0,         1,          1,           1,        -1,       'm' }, /* music */
 
 };
 
@@ -72,22 +71,18 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL };
 static const char *termcmd[] = { "kitty", NULL };
 static const char *webcmd[] = { "firefox", NULL };
-static const char *filecmd[] = { "thunar", NULL };
 
 #include "movestack.c"
 
 /*First arg only serves to match against key in rules*/
-/*static const char *scratchpadcmd[] = {"s", "kitty", "-t", "scratchpad", NULL};*/
-static const char *sptermcmd[]   = {"t", "kitty", "-t", "scratchpad", "-g", "120x34", NULL};
-static const char *spncmpcppcmd[] = {"m", "kitty", "-t", "spncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL};
+static const char *sptermcmd[]   = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL};
+static const char *spncmpcppcmd[] = {"m", "st", "-t", "ncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      spawn,          {.v = webcmd } },
-	{ MODKEY,                       XK_f,      spawn,          {.v = filecmd } },
-/*	{ MODKEY|ShiftMask,           XK_Return, togglescratch,  {.v = scratchpadcmd } }, */
 	{ MODKEY|ShiftMask,             XK_Return, togglescratch, {.v = sptermcmd } },    /* terminal */
   { MODKEY|ShiftMask,             XK_m,      togglescratch, {.v = spncmpcppcmd } }, /* music */
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
