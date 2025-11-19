@@ -18,11 +18,8 @@
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
 #define BLOCKS(X)             \
-    X("", "sb_music", 0, 2)   \
-    X("", "sb_battery", 5, 9) \
-    X("", "sb_cpu", 5, 9) \
-    X("", "sb_memory", 10, 4) \
+    X("", "sb_battery", 30, 9) \
     X("", "sb_disk", 1800, 3) \
-    X("", "sb_date", 1, 10)
+    X("", "sb_date", 60, 10)
 
 #endif  // CONFIG_H
