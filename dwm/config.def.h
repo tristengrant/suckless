@@ -7,7 +7,7 @@ static const int swallowfloating    = 0;        /* 1 means swallow floating wind
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "JetBrains Mono NL:size=12" };
-static const char dmenufont[]       = "JetBrains Mono NL:size=12";
+static const char dmenufont[]       = "JetBrains Mono:size=12";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -16,7 +16,7 @@ static const char col_cyan[]        = "#005577";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_gray1, col_gray3 },
+	[SchemeSel]  = { col_gray4, col_gray1,  col_gray3 },
 };
 
 /* tagging */
@@ -27,14 +27,13 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor   scratch key */
-	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1,       0 },
-	{ "Firefox", NULL,     NULL,           0,         0,          0,          -1,        -1,       0 },
-	{ "Kitty",   NULL,     NULL,           0,         0,          1,           0,        -1,       0 },
-	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1,       0 }, /* xev */
-  { NULL,      NULL,     "scratchpad",   0,         1,          1,           1,        -1,       't' }, /* spterm */
-  { NULL,      NULL,     "ncmpcpp",      0,         1,          1,           1,        -1,       'm' }, /* music */
-
+	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor  scratch key */
+	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1,      0 },
+	{ "Firefox", NULL,     NULL,           0,         0,          0,          -1,        -1,      0 },
+	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 ,     0 },
+  { NULL,      NULL,     "scratchpad",   0,         1,          1,           1,        -1,      't' },
+  { NULL,      NULL,     "ncmpcpp",      0,         1,          1,           1,        -1,      'm' },
+	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1,      0 }, /* xev */
 };
 
 /* layout(s) */
@@ -42,8 +41,8 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int attachbelow = 1;    /* 1 means attach after the currently active window */
-static const int mainmon = 0; /* xsetroot will only change the bar on this monitor */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const int mainmon = 0; /* xsetroot will only change the bar on this monitor */
 static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
 
 static const Layout layouts[] = {
@@ -69,32 +68,32 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL };
-static const char *termcmd[] = { "kitty", NULL };
+static const char *termcmd[]  = { "kitty", NULL };
 static const char *webcmd[] = { "firefox", NULL };
-
-#include "movestack.c"
 
 /*First arg only serves to match against key in rules*/
 static const char *sptermcmd[]   = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL};
 static const char *spncmpcppcmd[] = {"m", "st", "-t", "ncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL};
 
+#include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      spawn,          {.v = webcmd } },
-	{ MODKEY|ShiftMask,             XK_Return, togglescratch, {.v = sptermcmd } },    /* terminal */
-  { MODKEY|ShiftMask,             XK_m,      togglescratch, {.v = spncmpcppcmd } }, /* music */
+	{ MODKEY|ShiftMask,             XK_Return, togglescratch,  {.v = sptermcmd } }, /* terminal scratchpad */
+	{ MODKEY|ShiftMask,             XK_m,      togglescratch,  {.v = spncmpcppcmd } }, /* ncmpcpp scratchpad */
+	{ MODKEY|ControlMask,           XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-/*	{ MODKEY,                     XK_i,      incnmaster,     {.i = +1 } }, */
-/*	{ MODKEY,                     XK_d,      incnmaster,     {.i = -1 } }, */
+/*{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },*/
+/*{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },*/
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-/*	{ MODKEY,                     XK_Return, zoom,           {0} }, */
-/*	{ MODKEY,                     XK_Tab,    view,           {0} }, */
+/*{ MODKEY,                       XK_Return, zoom,           {0} },*/
+/*{ MODKEY,                       XK_Tab,    view,           {0} },*/
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
@@ -107,6 +106,9 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ 0,                            XK_Print,  spawn,          SHCMD("flameshot gui") },
+  { ShiftMask,                    XK_Print,  spawn,          SHCMD("flameshot screen") },
+  { MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -116,10 +118,8 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-	{ 0,                            XK_Print,  spawn,          SHCMD("flameshot gui") },
-  { ShiftMask,                    XK_Print,  spawn,          SHCMD("flameshot screen") },
-  { MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("slock") },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* quit dwm */
+	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* reload dwm */
 };
 
 /* button definitions */
@@ -132,7 +132,7 @@ static const Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
-  { ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
+	{ ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
   { ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
   { ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },

@@ -4,17 +4,21 @@ This is the Suckless.org software I use for my Linux systems. I'm also using dwm
 
 ## DWM 6.6 Patches
 
-1. dwm-pertag-20200914-61bb8b2.diff
+1. dwm-attachbelow-6.2.diff
 2. dwm-alwayscenter-20200625-f04cac6.diff
-3. dwm-attachbelow-6.2.diff
-4. dwm-movestack-20211115-a786211.diff
-5. dwm-resizecorners-6.5.diff
-6. dwm-cursorwarp-stackonly-20210222-61bb8b2.diff
-7. dwm-noborderselflickerfix-2022042627-d93ff48803f0.diff
-8. dwm-mainmon-20220330-bece862.diff
-9. dwm-statuscmd-20241009-8933ebc.diff
-10. dwm-namedscratchpads-6.5.diff
-11. dwm-swallow-6.3.diff
+3. dwm-movestack-20211115-a786211.diff
+4. dwm-resizecorners-6.5.diff
+5. dwm-pertag-20200914-61bb8b2.diff
+6. dwm-mainmon-20220330-bece862.diff
+7. dwm-fixmultimon-6.4.diff
+8. dwm-cursorwarp-stackonly-20210222-61bb8b2.diff
+9. dwm-focusmaster-return-6.2.diff
+10. dwm-noborderselflickerfix-2022042627-d93ff48803f0.diff
+11. dwm-namedscratchpads-6.5.diff
+12. dwm-swallow-6.3.diff
+13. dwm-statuscmd-20241009-8933ebc.diff
+14. dwm-preserveonrestart-6.3.diff
+15. dwm-restartsig-20180523-6.2.diff
 
 ## Dmenu
 
