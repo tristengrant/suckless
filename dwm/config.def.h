@@ -83,6 +83,7 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {"dmenu_run", "-m",  dmenumon,  "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL};
 static const char *termcmd[] = {"kitty", NULL};
 static const char *webcmd[] = {"firefox", NULL};
+static const char *filescmd[] = {"kitty", "-e", "yazi", NULL};
 
 /*First arg only serves to match against key in rules*/
 static const char *sptermcmd[] = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL};
@@ -90,71 +91,77 @@ static const char *spncmpcppcmd[] = {"m", "st", "-t", "ncmpcpp", "-g", "144x41",
 
 #include "movestack.c"
 static const Key keys[] = {
-    /* modifier                     key                       function argument
-     */
-    {MODKEY, XK_r, spawn, {.v = dmenucmd}},
-    {MODKEY, XK_Return, spawn, {.v = termcmd}},
-    {MODKEY, XK_b, spawn, {.v = webcmd}},
-    {MODKEY | ShiftMask, XK_Return, togglescratch, {.v = sptermcmd}}, /* terminal scratchpad */
-    {MODKEY | ShiftMask, XK_m, togglescratch, {.v = spncmpcppcmd}}, /* ncmpcpp scratchpad */
-    {MODKEY | ControlMask, XK_b, togglebar, {0}}, {MODKEY, XK_j, focusstack, {.i = +1}},
-    {MODKEY, XK_k, focusstack, {.i = -1}},
-    /*{ MODKEY,                       XK_i,                     incnmaster, {.i = +1 } },*/
-    /*{ MODKEY,                       XK_d,                     incnmaster, {.i = -1 } },*/
-    {MODKEY, XK_h, setmfact, {.f = -0.05}},
-    {MODKEY, XK_l, setmfact, {.f = +0.05}},
-    {MODKEY | ShiftMask, XK_j, movestack, {.i = +1}},
-    {MODKEY | ShiftMask, XK_k, movestack, {.i = -1}},
-    /*{ MODKEY,                       XK_Return,                zoom, {0} },*/
-    /*{ MODKEY,                       XK_Tab,                   view, {0} },*/
-    {MODKEY, XK_q, killclient, {0}},
-    {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
-    {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
-    {MODKEY, XK_space, setlayout, {0}},
-    {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
-    {MODKEY, XK_0, view, {.ui = ~0}},
-    {MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}},
-    {MODKEY, XK_comma, focusmon, {.i = -1}},
-    {MODKEY, XK_period, focusmon, {.i = +1}},
-    {MODKEY | ShiftMask, XK_comma, tagmon, {.i = -1}},
-    {MODKEY | ShiftMask, XK_period, tagmon, {.i = +1}},
-    {0, XK_Print, spawn, SHCMD("scrot ~/Pictures/screenshots/%Y%m%d_%H%M%S.png && notify-send 'Screenshot taken'")},
-    {ShiftMask, XK_Print, spawn, SHCMD("scrot -s ~/Pictures/screenshots/%Y%m%d_%H%M%S.png && notify-send 'Screenshot taken'")},
-    {MODKEY | ShiftMask, XK_l, spawn, SHCMD("slock")},
-    {MODKEY|ShiftMask, XK_p, spawn, SHCMD("~/Projects/scripts/colourpicker.sh")},
-    {0, XF86XK_MonBrightnessUp, spawn, SHCMD("brightnessctl set +10%")},
-    {0, XF86XK_MonBrightnessDown, spawn, SHCMD("brightnessctl set 10%-")},
-    {MODKEY, XK_F1, spawn, SHCMD("~/Projects/scripts/volume.sh mute")},
-    {MODKEY, XK_F2, spawn, SHCMD("~/Projects/scripts/volume.sh down")},
-    {MODKEY, XK_F3, spawn, SHCMD("~/Projects/scripts/volume.sh up")},
-    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
-    TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
+    /* modifier           key                       function              argument */
+    {MODKEY,              XK_r,                     spawn,                {.v = dmenucmd}},
+    {MODKEY,              XK_Return,                spawn,                {.v = termcmd}},
+    {MODKEY,              XK_b,                     spawn,                {.v = webcmd}},
+    {MODKEY,              XK_f,                     spawn,                {.v = filescmd}},
+    {MODKEY|ShiftMask,    XK_Return,                togglescratch,        {.v = sptermcmd}}, /* terminal scratchpad */
+    {MODKEY|ShiftMask,    XK_m,                     togglescratch,        {.v = spncmpcppcmd}}, /* ncmpcpp scratchpad */
+    {MODKEY|ControlMask,  XK_b,                     togglebar,            {0}},
+    {MODKEY,              XK_j,                     focusstack,           {.i = +1}},
+    {MODKEY,              XK_k,                     focusstack,           {.i = -1}},
+    /*{ MODKEY,           XK_i,                     incnmaster,           {.i = +1 } },*/
+    /*{ MODKEY,           XK_d,                     incnmaster,           {.i = -1 } },*/
+    {MODKEY,              XK_h,                     setmfact,             {.f = -0.05}},
+    {MODKEY,              XK_l,                     setmfact,             {.f = +0.05}},
+    {MODKEY|ShiftMask,    XK_j,                     movestack,            {.i = +1}},
+    {MODKEY|ShiftMask,    XK_k,                     movestack,            {.i = -1}},
+    /*{ MODKEY,           XK_Return,                zoom,                 {0} },*/
+    /*{ MODKEY,           XK_Tab,                   view,                 {0} },*/
+    {MODKEY,              XK_q,                     killclient,           {0}},
+    {MODKEY,              XK_t,                     setlayout,            {.v = &layouts[0]}},
+    /*{MODKEY,            XK_f,                   setlayout,          {.v = &layouts[1]}},*/
+    {MODKEY,              XK_m,                     setlayout,            {.v = &layouts[2]}},
+    {MODKEY,              XK_space,                 setlayout,            {0}},
+    {MODKEY|ShiftMask,    XK_space,                 togglefloating,       {0}},
+    {MODKEY,              XK_0,                     view,                 {.ui = ~0}},
+    {MODKEY|ShiftMask,    XK_0,                     tag,                  {.ui = ~0}},
+    {MODKEY,              XK_comma,                 focusmon,             {.i = -1}},
+    {MODKEY,              XK_period,                focusmon,             {.i = +1}},
+    {MODKEY|ShiftMask,    XK_comma,                 tagmon,               {.i = -1}},
+    {MODKEY|ShiftMask,    XK_period,                tagmon,               {.i = +1}},
+    {0,                   XK_Print,                 spawn,                SHCMD("scrot ~/Pictures/screenshots/%Y%m%d_%H%M%S.png && notify-send 'Screenshot taken'")},
+    {ShiftMask,           XK_Print,                 spawn,                SHCMD("scrot -s ~/Pictures/screenshots/%Y%m%d_%H%M%S.png && notify-send 'Screenshot taken'")},
+    {MODKEY|ShiftMask,    XK_l,                     spawn,                SHCMD("slock")},
+    {MODKEY|ShiftMask,    XK_p,                     spawn,                SHCMD("~/Projects/scripts/colourpicker.sh")},
+    {0,                   XF86XK_MonBrightnessUp,   spawn,                SHCMD("brightnessctl set +10%")},
+    {0,                   XF86XK_MonBrightnessDown, spawn,                SHCMD("brightnessctl set 10%-")},
+    {MODKEY,              XK_F1,                    spawn,                SHCMD("~/Projects/scripts/volume.sh mute")},
+    {MODKEY,              XK_F2,                    spawn,                SHCMD("~/Projects/scripts/volume.sh down")},
+    {MODKEY,              XK_F3,                    spawn,                SHCMD("~/Projects/scripts/volume.sh up")},
+    TAGKEYS(XK_1, 0)
+    TAGKEYS(XK_2, 1) 
+    TAGKEYS(XK_3, 2)
+    TAGKEYS(XK_4, 3)
+    TAGKEYS(XK_5, 4)
+    TAGKEYS(XK_6, 5)
+    TAGKEYS(XK_7, 6)
+    TAGKEYS(XK_8, 7)
     TAGKEYS(XK_9, 8)
-    /*	{ MODKEY|ShiftMask,           XK_q,                     quit, {0} }, quit dwm  */
-    {MODKEY | ShiftMask, XK_q, spawn, SHCMD("~/Projects/scripts/dmenu/power.sh")},
-    {MODKEY | ShiftMask, XK_r, quit, {1}}, /* reload dwm */
+    {MODKEY|ShiftMask,    XK_q,                     spawn,                SHCMD("~/Projects/scripts/dmenu/power.sh")},
+    {MODKEY|ShiftMask,    XK_r,                     quit,                 {1}}, /* reload dwm */
 };
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
  * ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
-    /* click                event mask      button          function argument */
-    {ClkLtSymbol, 0, Button1, setlayout, {0}},
-    {ClkLtSymbol, 0, Button3, setlayout, {.v = &layouts[2]}},
-    {ClkWinTitle, 0, Button2, zoom, {0}},
-    {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
-    {ClkStatusText, 0, Button2, sigstatusbar, {.i = 2}},
-    {ClkStatusText, 0, Button3, sigstatusbar, {.i = 3}},
-    {ClkStatusText, 0, Button4, sigstatusbar, {.i = 4}},
-    {ClkStatusText, 0, Button5, sigstatusbar, {.i = 5}},
-    {ClkStatusText, ShiftMask, Button1, sigstatusbar, {.i = 6}},
-    {ClkClientWin, MODKEY, Button1, movemouse, {0}},
-    {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
-    {ClkClientWin, MODKEY, Button3, resizemouse, {0}},
-    {ClkTagBar, 0, Button1, view, {0}},
-    {ClkTagBar, 0, Button3, toggleview, {0}},
-    {ClkTagBar, MODKEY, Button1, tag, {0}},
-    {ClkTagBar, MODKEY, Button3, toggletag, {0}},
+    /* click          event mask    button     function        argument */
+    {ClkLtSymbol,     0,            Button1,   setlayout,      {0}},
+    {ClkLtSymbol,     0,            Button3,   setlayout,      {.v = &layouts[2]}},
+    {ClkWinTitle,     0,            Button2,   zoom,           {0}},
+    {ClkStatusText,   0,            Button1,   sigstatusbar,   {.i = 1}},
+    {ClkStatusText,   0,            Button2,   sigstatusbar,   {.i = 2}},
+    {ClkStatusText,   0,            Button3,   sigstatusbar,   {.i = 3}},
+    {ClkStatusText,   0,            Button4,   sigstatusbar,   {.i = 4}},
+    {ClkStatusText,   0,            Button5,   sigstatusbar,   {.i = 5}},
+    {ClkStatusText,   ShiftMask,    Button1,   sigstatusbar,   {.i = 6}},
+    {ClkClientWin,    MODKEY,       Button1,   movemouse,      {0}},
+    {ClkClientWin,    MODKEY,       Button2,   togglefloating, {0}},
+    {ClkClientWin,    MODKEY,       Button3,   resizemouse,    {0}},
+    {ClkTagBar,       0,            Button1,   view,           {0}},
+    {ClkTagBar,       0,            Button3,   toggleview,     {0}},
+    {ClkTagBar,       MODKEY,       Button1,   tag,            {0}},
+    {ClkTagBar,       MODKEY,       Button3,   toggletag,      {0}},
 };

@@ -6,7 +6,10 @@
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 static char *font = "JetBrains Mono NL:pixelsize=16:antialias=true:autohint=true";
-static int borderpx = 10;
+/* Spare fonts */
+static char *font2[] = {"JetBrains Mono Nerd Font:pixelsize=16:antialias=true:autohint=true"};
+
+static int borderpx = 2;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -108,46 +111,35 @@ char *termname = "st-256color";
  */
 unsigned int tabspaces = 8;
 
-/* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-	/* 8 normal colors */
-	"black",
-	"red3",
-	"green3",
-	"yellow3",
-	"blue2",
-	"magenta3",
-	"cyan3",
-	"gray90",
+    /* 0–7 normal colors */
+    [0] = "#0e0e0f",  // black (Alabaster bg0 — very dark)
+    [1] = "#ff5f5f",  // red
+    [2] = "#86d75f",  // green
+    [3] = "#ffd75f",  // yellow
+    [4] = "#5fafff",  // blue
+    [5] = "#d787ff",  // magenta
+    [6] = "#5fd7d7",  // cyan
+    [7] = "#e5eaf0",  // white (Alabaster fg)
 
-	/* 8 bright colors */
-	"gray50",
-	"red",
-	"green",
-	"yellow",
-	"#5c5cff",
-	"magenta",
-	"cyan",
-	"white",
+    /* 8–15 bright */
+    [8]  = "#3d3f45",
+    [9]  = "#ff8787",
+    [10] = "#a8ff87",
+    [11] = "#fff787",
+    [12] = "#87afff",
+    [13] = "#ffafff",
+    [14] = "#87ffff",
+    [15] = "#f0f3f7",
 
-	[255] = 0,
-
-	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc",
-	"#555555",
-	"gray90", /* default foreground colour */
-	"black", /* default background colour */
+    /* 256+ only used for cursor */
+    [256] = "#3d3f45",  // cursor color
 };
 
-
-/*
- * Default colors (colorname index)
- * foreground, background, cursor, reverse cursor
- */
-unsigned int defaultfg = 258;
-unsigned int defaultbg = 259;
+unsigned int defaultfg = 7;    // Alabaster foreground
+unsigned int defaultbg = 0;    // Alabaster very-dark background
 unsigned int defaultcs = 256;
-static unsigned int defaultrcs = 257;
+unsigned int defaultrcs = 256;
 
 /*
  * Default shape of cursor
@@ -191,6 +183,8 @@ static uint forcemousemod = ShiftMask;
  */
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
+	{ ShiftMask,            Button4, kscrollup,      {.i = 1} },
+	{ ShiftMask,            Button5, kscrolldown,    {.i = 1} },
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
@@ -216,6 +210,10 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
+  { MODKEY,               XK_l,           copyurl,        {.i =  0} },
+	{ MODKEY|ShiftMask,     XK_L,           copyurl,        {.i =  1} },
+	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
+  { ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
 };
 
 /*
