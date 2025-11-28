@@ -5,9 +5,9 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "JetBrains Mono NL:pixelsize=17:antialias=true:autohint=true";
+static char *font = "JetBrains Mono NL:pixelsize=16:antialias=true:autohint=true";
 /* Spare fonts */
-static char *font2[] = {"JetBrains Mono Nerd Font:pixelsize=17:antialias=true:autohint=true"};
+static char *font2[] = {"JetBrains Mono Nerd Font:pixelsize=16:antialias=true:autohint=true",};
 
 static int borderpx = 2;
 
@@ -59,7 +59,7 @@ int allowwindowops = 0;
  * near minlatency, but it waits longer for slow updates to avoid partial draw.
  * low minlatency will tear/flicker more, as it can "detect" idle too early.
  */
-static double minlatency = 2;
+static double minlatency = 8;
 static double maxlatency = 33;
 
 /*
@@ -72,18 +72,6 @@ static unsigned int blinktimeout = 800;
  * thickness of underline and bar cursors
  */
 static unsigned int cursorthickness = 2;
-
-/*
- * 1: render most of the lines/blocks characters without using the font for
- *    perfect alignment between cells (U2500 - U259F except dashes/diagonals).
- *    Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
- * 0: disable (render all U25XX glyphs normally from the font).
- */
-const int boxdraw = 0;
-const int boxdraw_bold = 0;
-
-/* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
-const int boxdraw_braille = 0;
 
 /*
  * bell volume. It must be a value between -100 and 100. Use 0 for disabling
@@ -183,8 +171,6 @@ static uint forcemousemod = ShiftMask;
  */
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
-	{ ShiftMask,            Button4, kscrollup,      {.i = 1} },
-	{ ShiftMask,            Button5, kscrolldown,    {.i = 1} },
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
@@ -195,6 +181,11 @@ static MouseShortcut mshortcuts[] = {
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
+
+/* point directly at the scripts inside the dmenu/ directory */
+static char *openurlcmd[]  = { "/home/tristen/Projects/scripts/dmenu/st-urlhandler", "-o", NULL };
+static char *copyurlcmd[]  = { "/home/tristen/Projects/scripts/dmenu/st-urlhandler", "-c", NULL };
+static char *copyoutput[]  = { "/home/tristen/Projects/scripts/dmenu/st-copyout", NULL };
 
 static Shortcut shortcuts[] = {
 	/* mask                 keysym          function        argument */
@@ -210,10 +201,17 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-  { MODKEY,               XK_l,           copyurl,        {.i =  0} },
-	{ MODKEY|ShiftMask,     XK_L,           copyurl,        {.i =  1} },
 	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
-  { ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
+	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
+  { MODKEY,               XK_k,           kscrollup,      {.i =  1} },
+  { MODKEY,               XK_j,           kscrolldown,    {.i =  1} },
+  { MODKEY,               XK_Up,          kscrollup,      {.i =  1} },
+  { MODKEY,               XK_Down,        kscrollup,      {.i =  1} },
+  { MODKEY,               XK_u,           kscrollup,      {.i =  -1} },
+  { MODKEY,               XK_d,           kscrolldown,    {.i =  -1} },
+  { MODKEY, XK_l, externalpipe, {.v = openurlcmd } },
+{ MODKEY, XK_y, externalpipe, {.v = copyurlcmd } },
+{ MODKEY, XK_o, externalpipe, {.v = copyoutput } },
 };
 
 /*

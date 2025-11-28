@@ -131,7 +131,7 @@ static const Key keys[] = {
     {MODKEY,              XK_F2,                    spawn,                SHCMD("~/Projects/scripts/volume.sh down")},
     {MODKEY,              XK_F3,                    spawn,                SHCMD("~/Projects/scripts/volume.sh up")},
     TAGKEYS(XK_1, 0)
-    TAGKEYS(XK_2, 1) 
+    TAGKEYS(XK_2, 1)
     TAGKEYS(XK_3, 2)
     TAGKEYS(XK_4, 3)
     TAGKEYS(XK_5, 4)

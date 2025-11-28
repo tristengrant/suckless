@@ -28,14 +28,12 @@ No patches applied yet.
 1. slock-capscolor-20220921-35633d4.diff
 2. slock-git-20161012-control-clear.diff
 
-# St
+# St 0.8.5
 1. st-anysize-20220718-baa9357.diff
-2. st-bold-is-not-bright-20190127-3be4cf1.diff
-3. st-boxdraw_v2-0.8.5.diff
-4. st-charoffsets-20220311-0.8.5.diff
-5. st-clipboard-20161202-0.8.5.diff
-6. st-copyurl-20161202-0.8.5.diff
-7. st-font2-0.8.5.diff
-8. st-scrollback-0.9.2.diff
-9. st-scrollback-reflow-0.9.diff
-10. st-scrollback-mouse-0.9.2.diff
+2. st-charoffsets-20220311-0.8.5.diff
+3. st-bold-is-not-bright-20190127-3be4cf1.diff
+4. st-font2-0.8.5.diff
+5. st-scrollback-0.8.5.diff
+6. st-scrollback-reflow-0.8.5.diff
+7. st-externalpipe-0.8.5.diff
+8. st-externalpipe-eternal-0.8.3.diff

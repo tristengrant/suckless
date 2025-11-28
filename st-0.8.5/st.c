@@ -46,20 +46,23 @@
 #define ISDELIM(u)		(u && wcschr(worddelimiters, u))
 
 #define TLINE(y) ( \
-	(y) < term.scr ? term.hist[(term.histi + (y) - term.scr + 1 + HISTSIZE) % HISTSIZE] \
-	              : term.line[(y) - term.scr] \
+       (y) < term.scr ? term.hist[(term.histi + (y) - term.scr + 1 + HISTSIZE) % HISTSIZE] \
+                      : term.line[(y) - term.scr] \
 )
 
 #define TLINEABS(y) ( \
-	(y) < 0 ? term.hist[(term.histi + (y) + 1 + HISTSIZE) % HISTSIZE] : term.line[(y)] \
+       (y) < 0 ? term.hist[(term.histi + (y) + 1 + HISTSIZE) % HISTSIZE] : term.line[(y)] \
 )
 
 #define UPDATEWRAPNEXT(alt, col) do { \
-	if ((term.c.state & CURSOR_WRAPNEXT) && term.c.x + term.wrapcwidth[alt] < col) { \
-		term.c.x += term.wrapcwidth[alt]; \
-		term.c.state &= ~CURSOR_WRAPNEXT; \
-	} \
+       if ((term.c.state & CURSOR_WRAPNEXT) && term.c.x + term.wrapcwidth[alt] < col) { \
+               term.c.x += term.wrapcwidth[alt]; \
+               term.c.state &= ~CURSOR_WRAPNEXT; \
+       } \
 } while (0);
+
+/* Remove below is cause error */
+#define TLINE_HIST(y)           ((y) <= HISTSIZE-term.row+2 ? term.hist[(y)] : term.line[(y-HISTSIZE+term.row-3)])
 
 enum term_mode {
 	MODE_WRAP        = 1 << 0,
@@ -110,8 +113,8 @@ enum escape_state {
 
 typedef struct {
 	Glyph attr; /* current char attributes */
-	int x; /* terminal column */
-	int y; /* terminal row */
+	int x;
+	int y;
 	char state;
 } TCursor;
 
@@ -180,11 +183,6 @@ typedef struct {
 	int narg;              /* nb of args */
 } STREscape;
 
-typedef struct {
-	int state;
-	size_t length;
-} URLdfa;
-
 static void execsh(char *, char **);
 static void stty(char **);
 static void sigchld(int);
@@ -194,7 +192,6 @@ static void csidump(void);
 static void csihandle(void);
 static void csiparse(void);
 static void csireset(void);
-static void osc_color_response(int, int, int);
 static int eschandle(uchar);
 static void strdump(void);
 static void strhandle(void);
@@ -245,7 +242,6 @@ static void tdefutf8(char);
 static int32_t tdefcolor(const int *, int *, int);
 static void tdeftran(char);
 static void tstrsequence(uchar);
-static int daddch(URLdfa *, char);
 
 static void drawregion(int, int, int, int);
 
@@ -398,10 +394,25 @@ utf8validate(Rune *u, size_t i)
 	return i;
 }
 
+static const char base64_digits[] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0,
+	63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, -1, 0, 0, 0, 0, 1,
+	2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+	22, 23, 24, 25, 0, 0, 0, 0, 0, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+	35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 char
 base64dec_getc(const char **src)
 {
-	while (**src && !isprint((unsigned char)**src))
+	while (**src && !isprint(**src))
 		(*src)++;
 	return **src ? *((*src)++) : '=';  /* emulate padding if string ends */
 }
@@ -411,13 +422,6 @@ base64dec(const char *src)
 {
 	size_t in_len = strlen(src);
 	char *result, *dst;
-	static const char base64_digits[256] = {
-		[43] = 62, 0, 0, 0, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
-		0, 0, 0, -1, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-		13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0,
-		0, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-		40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
-	};
 
 	if (in_len % 4)
 		in_len += 4 - (in_len % 4);
@@ -493,6 +497,20 @@ tgetline(char *buf, const Glyph *fgp)
 	if (!(lgp->mode & ATTR_WRAP))
 		*(ptr++) = '\n';
 	return ptr - buf;
+}
+
+int
+tlinehistlen(int y)
+{
+	int i = term.col;
+
+	if (TLINE_HIST(y)[i - 1].mode & ATTR_WRAP)
+		return i;
+
+	while (i > 0 && TLINE_HIST(y)[i - 1].u == ' ')
+		--i;
+
+	return i;
 }
 
 void
@@ -799,8 +817,14 @@ sigchld(int a)
 	if ((p = waitpid(pid, &stat, WNOHANG)) < 0)
 		die("waiting for pid %hd failed: %s\n", pid, strerror(errno));
 
-	if (pid != p)
+	if (pid != p) {
+		if (p == 0 && wait(&stat) < 0)
+			die("wait: %s\n", strerror(errno));
+
+		/* reinstall sigchld handler */
+		signal(SIGCHLD, sigchld);
 		return;
+	}
 
 	if (WIFEXITED(stat) && WEXITSTATUS(stat))
 		die("child exited with status %d\n", WEXITSTATUS(stat));
@@ -884,7 +908,7 @@ ttynew(const char *line, char *cmd, const char *out, char **args)
 		break;
 	default:
 #ifdef __OpenBSD__
-		if (pledge("stdio rpath tty proc", NULL) == -1)
+		if (pledge("stdio rpath tty proc exec", NULL) == -1)
 			die("pledge\n");
 #endif
 		close(s);
@@ -1021,7 +1045,7 @@ ttyresize(int tw, int th)
 }
 
 void
-ttyhangup(void)
+ttyhangup()
 {
 	/* Send SIGHUP to shell */
 	kill(pid, SIGHUP);
@@ -1278,6 +1302,7 @@ tscrollup(int top, int bot, int n, int mode)
 	int alt = IS_SET(MODE_ALTSCREEN);
 	int savehist = !alt && top == 0 && mode != SCROLL_NOSAVEHIST;
 	Line temp;
+
 	if (n <= 0)
 		return;
 	n = MIN(n, bot-top+1);
@@ -1305,7 +1330,7 @@ tscrollup(int top, int bot, int n, int mode)
 		tsetdirt(top+n, bot);
 	}
 
-  for (i = top; i <= bot-n; i++) {
+	for (i = top; i <= bot-n; i++) {
 		temp = term.line[i];
 		term.line[i] = term.line[i+n];
 		term.line[i+n] = temp;
@@ -1340,7 +1365,7 @@ selscroll(int top, int bot, int n)
 	} else if (BETWEEN(sel.nb.y, top, bot)) {
 		selmove(n);
 		if (sel.nb.y < top || sel.ne.y > bot)
-    selclear();
+			selclear();
 	}
 }
 
@@ -1446,9 +1471,6 @@ tsetchar(Rune u, const Glyph *attr, int x, int y)
 	term.line[y][x] = *attr;
 	term.line[y][x].u = u;
 	term.line[y][x].mode |= ATTR_SET;
-
-	if (isboxdraw(u))
-		term.line[y][x].mode |= ATTR_BOXDRAW;
 }
 
 void
@@ -1873,7 +1895,7 @@ csihandle(void)
 			ttywrite(vtiden, strlen(vtiden), 0);
 		break;
 	case 'b': /* REP -- if last char is printable print it <n> more times */
-		LIMIT(csiescseq.arg[0], 1, 65535);
+		DEFAULT(csiescseq.arg[0], 1);
 		if (term.lastc)
 			while (csiescseq.arg[0]-- > 0)
 				tputc(term.lastc);
@@ -1967,7 +1989,6 @@ csihandle(void)
 		}
 		break;
 	case 'S': /* SU -- Scroll <n> line up */
-		if (csiescseq.priv) break;
 		DEFAULT(csiescseq.arg[0], 1);
 		/* xterm, urxvt, alacritty save this in history */
 		tscrollup(term.top, term.bot, csiescseq.arg[0], SCROLL_SAVEHIST);
@@ -2012,18 +2033,11 @@ csihandle(void)
 	case 'm': /* SGR -- Terminal attribute (color) */
 		tsetattr(csiescseq.arg, csiescseq.narg);
 		break;
-	case 'n': /* DSR -- Device Status Report */
-		switch (csiescseq.arg[0]) {
-		case 5: /* Status Report "OK" `0n` */
-			ttywrite("\033[0n", sizeof("\033[0n") - 1, 0);
-			break;
-		case 6: /* Report Cursor Position (CPR) "<row>;<column>R" */
+	case 'n': /* DSR – Device Status Report (cursor position) */
+		if (csiescseq.arg[0] == 6) {
 			n = snprintf(buf, sizeof(buf), "\033[%i;%iR",
-			               term.c.y+1, term.c.x+1);
+					term.c.y+1, term.c.x+1);
 			ttywrite(buf, n, 0);
-			break;
-		default:
-			goto unknown;
 		}
 		break;
 	case 'r': /* DECSTBM -- Set Scrolling Region */
@@ -2086,28 +2100,39 @@ csireset(void)
 }
 
 void
-osc_color_response(int num, int index, int is_osc4)
+osc4_color_response(int num)
 {
 	int n;
 	char buf[32];
 	unsigned char r, g, b;
 
-	if (xgetcolor(is_osc4 ? num : index, &r, &g, &b)) {
-		fprintf(stderr, "erresc: failed to fetch %s color %d\n",
-		        is_osc4 ? "osc4" : "osc",
-		        is_osc4 ? num : index);
+	if (xgetcolor(num, &r, &g, &b)) {
+		fprintf(stderr, "erresc: failed to fetch osc4 color %d\n", num);
 		return;
 	}
 
-	n = snprintf(buf, sizeof buf, "\033]%s%d;rgb:%02x%02x/%02x%02x/%02x%02x\007",
-	             is_osc4 ? "4;" : "", num, r, r, g, g, b, b);
-	if (n < 0 || n >= sizeof(buf)) {
-		fprintf(stderr, "error: %s while printing %s response\n",
-		        n < 0 ? "snprintf failed" : "truncation occurred",
-		        is_osc4 ? "osc4" : "osc");
-	} else {
-		ttywrite(buf, n, 1);
+	n = snprintf(buf, sizeof buf, "\033]4;%d;rgb:%02x%02x/%02x%02x/%02x%02x\007",
+		     num, r, r, g, g, b, b);
+
+	ttywrite(buf, n, 1);
+}
+
+void
+osc_color_response(int index, int num)
+{
+	int n;
+	char buf[32];
+	unsigned char r, g, b;
+
+	if (xgetcolor(index, &r, &g, &b)) {
+		fprintf(stderr, "erresc: failed to fetch osc color %d\n", index);
+		return;
 	}
+
+	n = snprintf(buf, sizeof buf, "\033]%d;rgb:%02x%02x/%02x%02x/%02x%02x\007",
+		     num, r, r, g, g, b, b);
+
+	ttywrite(buf, n, 1);
 }
 
 void
@@ -2115,11 +2140,6 @@ strhandle(void)
 {
 	char *p = NULL, *dec;
 	int j, narg, par;
-	const struct { int idx; char *str; } osc_table[] = {
-		{ defaultfg, "foreground" },
-		{ defaultbg, "background" },
-		{ defaultcs, "cursor" }
-	};
 
 	term.esc &= ~(ESC_STR_END|ESC_STR);
 	strparse();
@@ -2154,22 +2174,43 @@ strhandle(void)
 			}
 			return;
 		case 10:
+			if (narg < 2)
+				break;
+
+			p = strescseq.args[1];
+
+			if (!strcmp(p, "?"))
+				osc_color_response(defaultfg, 10);
+			else if (xsetcolorname(defaultfg, p))
+				fprintf(stderr, "erresc: invalid foreground color: %s\n", p);
+			else
+				redraw();
+			return;
 		case 11:
+			if (narg < 2)
+				break;
+
+			p = strescseq.args[1];
+
+			if (!strcmp(p, "?"))
+				osc_color_response(defaultbg, 11);
+			else if (xsetcolorname(defaultbg, p))
+				fprintf(stderr, "erresc: invalid background color: %s\n", p);
+			else
+				redraw();
+			return;
 		case 12:
 			if (narg < 2)
 				break;
-			p = strescseq.args[1];
-			if ((j = par - 10) < 0 || j >= LEN(osc_table))
-				break; /* shouldn't be possible */
 
-			if (!strcmp(p, "?")) {
-				osc_color_response(par, osc_table[j].idx, 0);
-			} else if (xsetcolorname(osc_table[j].idx, p)) {
-				fprintf(stderr, "erresc: invalid %s color: %s\n",
-				        osc_table[j].str, p);
-			} else {
-				tfulldirt();
-			}
+			p = strescseq.args[1];
+
+			if (!strcmp(p, "?"))
+				osc_color_response(defaultcs, 12);
+			else if (xsetcolorname(defaultcs, p))
+				fprintf(stderr, "erresc: invalid cursor color: %s\n", p);
+			else
+				redraw();
 			return;
 		case 4: /* color set */
 			if (narg < 3)
@@ -2179,13 +2220,11 @@ strhandle(void)
 		case 104: /* color reset */
 			j = (narg > 1) ? atoi(strescseq.args[1]) : -1;
 
-			if (p && !strcmp(p, "?")) {
-				osc_color_response(j, 0, 1);
-			} else if (xsetcolorname(j, p)) {
-				if (par == 104 && narg <= 1) {
-					xloadcols();
+			if (p && !strcmp(p, "?"))
+				osc4_color_response(j);
+			else if (xsetcolorname(j, p)) {
+				if (par == 104 && narg <= 1)
 					return; /* color reset without parameter */
-				}
 				fprintf(stderr, "erresc: invalid color j=%d, p=%s\n",
 				        j, p ? p : "(null)");
 			} else {
@@ -2193,7 +2232,7 @@ strhandle(void)
 				 * TODO if defaultbg color is changed, borders
 				 * are dirty
 				 */
-				tfulldirt();
+				redraw();
 			}
 			return;
 		}
@@ -2231,6 +2270,61 @@ strparse(void)
 			return;
 		*p++ = '\0';
 	}
+}
+
+void
+externalpipe(const Arg *arg)
+{
+	int to[2];
+	char buf[UTF_SIZ];
+	void (*oldsigpipe)(int);
+	Glyph *bp, *end;
+	int lastpos, n, newline;
+
+	if (pipe(to) == -1)
+		return;
+
+	switch (fork()) {
+	case -1:
+		close(to[0]);
+		close(to[1]);
+		return;
+	case 0:
+		dup2(to[0], STDIN_FILENO);
+		close(to[0]);
+		close(to[1]);
+		execvp(((char **)arg->v)[0], (char **)arg->v);
+		fprintf(stderr, "st: execvp %s\n", ((char **)arg->v)[0]);
+		perror("failed");
+		exit(0);
+	}
+
+	close(to[0]);
+	/* ignore sigpipe for now, in case child exists early */
+	oldsigpipe = signal(SIGPIPE, SIG_IGN);
+	newline = 0;
+	for (n = 0; n <= HISTSIZE + 2; n++) {
+		bp = TLINE_HIST(n);
+		lastpos = MIN(tlinehistlen(n) + 1, term.col) - 1;
+		if (lastpos < 0)
+			break;
+        if (lastpos == 0)
+            continue;
+		end = &bp[lastpos + 1];
+		for (; bp < end; ++bp)
+			if (xwrite(to[1], buf, utf8encode(bp->u, buf)) < 0)
+				break;
+		if ((newline = TLINE_HIST(n)[lastpos].mode & ATTR_WRAP))
+			continue;
+		if (xwrite(to[1], "\n", 1) < 0)
+			break;
+		newline = 0;
+	}
+	if (newline)
+		(void)xwrite(to[1], "\n", 1);
+	close(to[1]);
+	/* restore */
+	signal(SIGPIPE, oldsigpipe);
 }
 
 void
@@ -2409,16 +2503,12 @@ tstrsequence(uchar c)
 void
 tcontrolcode(uchar ascii)
 {
-	size_t i;
-
 	switch (ascii) {
 	case '\t':   /* HT */
 		tputtab(1);
 		return;
 	case '\b':   /* BS */
-		for (i = 1; term.c.x && term.line[term.c.y][term.c.x - i].u == 0; ++i)
-			;
-		tmoveto(term.c.x - i, term.c.y);
+		tmoveto(term.c.x-1, term.c.y);
 		return;
 	case '\r':   /* CR */
 		tmoveto(0, term.c.y);
@@ -2569,7 +2659,6 @@ eschandle(uchar ascii)
 		treset();
 		resettitle();
 		xloadcols();
-		xsetmode(0, MODE_HIDE);
 		break;
 	case '=': /* DECPAM -- Application keypad */
 		xsetmode(1, MODE_APPKEYPAD);
@@ -2662,9 +2751,6 @@ check_control_code:
 	 * they must not cause conflicts with sequences.
 	 */
 	if (control) {
-		/* in UTF-8 mode ignore handling C1 control characters */
-		if (IS_SET(MODE_UTF8) && ISCONTROLC1(u))
-			return;
 		tcontrolcode(u);
 		/*
 		 * control codes are not shown ever
@@ -2712,16 +2798,11 @@ check_control_code:
 		gp = &term.line[term.c.y][term.c.x];
 	}
 
-	if (IS_SET(MODE_INSERT) && term.c.x+width < term.col) {
+	if (IS_SET(MODE_INSERT) && term.c.x+width < term.col)
 		memmove(gp+width, gp, (term.col - term.c.x - width) * sizeof(Glyph));
-		gp->mode &= ~ATTR_WIDE;
-	}
 
 	if (term.c.x+width > term.col) {
-		if (IS_SET(MODE_WRAP))
-			tnewline(1);
-		else
-			tmoveto(term.col - width, term.c.y);
+		tnewline(1);
 		gp = &term.line[term.c.y][term.c.x];
 	}
 
@@ -3088,9 +3169,8 @@ draw(void)
 		cx--;
 
 	drawregion(0, 0, term.col, term.row);
-	if (term.scr == 0)
-		xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
-				term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
+	xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
+			term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
 	term.ocx = cx;
 	term.ocy = term.c.y;
 	xfinishdraw();
@@ -3103,99 +3183,4 @@ redraw(void)
 {
 	tfulldirt();
 	draw();
-}
-
-int
-daddch(URLdfa *dfa, char c)
-{
-	/* () and [] can appear in urls, but excluding them here will reduce false
-	 * positives when figuring out where a given url ends.
-	 */
-	static const char URLCHARS[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"abcdefghijklmnopqrstuvwxyz"
-		"0123456789-._~:/?#@!$&'*+,;=%";
-	static const char RPFX[] = "//:sptth";
-
-	if (!strchr(URLCHARS, c)) {
-		dfa->length = 0;
-		dfa->state = 0;
-
-		return 0;
-	}
-
-	dfa->length++;
-
-	if (dfa->state == 2 && c == '/') {
-		dfa->state = 0;
-	} else if (dfa->state == 3 && c == 'p') {
-		dfa->state++;
-	} else if (c != RPFX[dfa->state]) {
-		dfa->state = 0;
-		return 0;
-	}
-
-	if (dfa->state++ == 7) {
-		dfa->state = 0;
-		return 1;
-	}
-
-	return 0;
-}
-
-/*
-** Select and copy the previous url on screen (do nothing if there's no url).
-*/
-void
-copyurl(const Arg *arg) {
-	int row = 0, /* row of current URL */
-		col = 0, /* column of current URL start */
-		colend = 0, /* column of last occurrence */
-		passes = 0; /* how many rows have been scanned */
-
-	const char *c = NULL,
-		 *match = NULL;
-	URLdfa dfa = { 0 };
-
-	row = (sel.ob.x >= 0 && sel.nb.y > 0) ? sel.nb.y : term.bot;
-	LIMIT(row, term.top, term.bot);
-
-	colend = (sel.ob.x >= 0 && sel.nb.y > 0) ? sel.nb.x : term.col;
-	LIMIT(colend, 0, term.col);
-
-	/*
-	** Scan from (term.row - 1,term.col - 1) to (0,0) and find
-	** next occurrance of a URL
-	*/
-	for (passes = 0; passes < term.row; passes++) {
-		/* Read in each column of every row until
-		** we hit previous occurrence of URL
-		*/
-		for (col = colend; col--;)
-			if (daddch(&dfa, term.line[row][col].u < 128 ? term.line[row][col].u : ' '))
-				break;
-
-		if (col >= 0)
-			break;
-
-        /* .i = 0 --> botton-up
-         * .i = 1 --> top-down
-         */
-        if (!arg->i) {
-            if (--row < 0)
-                row = term.row - 1;
-        } else {
-            if (++row >= term.row)
-                row = 0;
-        }
-
-		colend = term.col;
-	}
-
-	if (passes < term.row) {
-		selstart(col, row, 0);
-		selextend((col + dfa.length - 1) % term.col, row + (col + dfa.length - 1) / term.col, SEL_REGULAR, 0);
-		selextend((col + dfa.length - 1) % term.col, row + (col + dfa.length - 1) / term.col, SEL_REGULAR, 1);
-		xsetsel(getsel());
-		xclipcopy();
-	}
 }

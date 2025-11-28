@@ -1,5 +1,5 @@
 # st version
-VERSION = 0.9.1
+VERSION = 0.8.5
 
 # Customize below to fit your system
 
@@ -30,7 +30,6 @@ STLDFLAGS = $(LIBS) $(LDFLAGS)
 #LIBS = -L$(X11LIB) -lm -lX11 -lutil -lXft \
 #       `$(PKG_CONFIG) --libs fontconfig` \
 #       `$(PKG_CONFIG) --libs freetype2`
-#MANPREFIX = ${PREFIX}/man
 
 # compiler and linker
 # CC = c99

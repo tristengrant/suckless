@@ -1,5 +1,5 @@
 diff --git a/st.c b/st.c
-index 79ee9ba..5170cd4 100644
+index 91e7077..a76d983 100644
 --- a/st.c
 +++ b/st.c
 @@ -36,6 +36,7 @@
@@ -841,11 +841,11 @@ index 79ee9ba..5170cd4 100644
  {
 -	int dst, src, size;
 -	Glyph *line;
--
--	LIMIT(n, 0, term.col - term.c.x);
 +	int src, dst, size;
 +	Line line;
  
+-	LIMIT(n, 0, term.col - term.c.x);
+-
 -	dst = term.c.x + n;
 +	if (n <= 0)
 +		return;
@@ -1214,14 +1214,14 @@ index 79ee9ba..5170cd4 100644
 +		j = (term.histi + i + 1 + HISTSIZE) % HISTSIZE;
 +		free(term.hist[j]);
 +		term.hist[j] = buf[ny];
-+	}
+ 	}
 +	term.histf = -i - 1;
 +	term.scr = MIN(term.scr, term.histf);
 +	/* resize rest of the history lines */
 +	for (/*i = -term.histf - 1 */; i >= -HISTSIZE; i--) {
 +		j = (term.histi + i + 1 + HISTSIZE) % HISTSIZE;
 +		term.hist[j] = xrealloc(term.hist[j], col * sizeof(Glyph));
- 	}
++	}
 +	free(buf);
 +}
  
@@ -1421,6 +1421,18 @@ index 79ee9ba..5170cd4 100644
  }
  
  void
+@@ -2709,9 +3057,8 @@ draw(void)
+ 		cx--;
+ 
+ 	drawregion(0, 0, term.col, term.row);
+-	if (term.scr == 0)
+-		xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
+-				term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
++	xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
++			term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
+ 	term.ocx = cx;
+ 	term.ocy = term.c.y;
+ 	xfinishdraw();
 diff --git a/st.h b/st.h
 index 818a6f8..514ec08 100644
 --- a/st.h
