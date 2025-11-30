@@ -83,7 +83,7 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {"dmenu_run", "-m",  dmenumon,  "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL};
 static const char *termcmd[] = {"st", NULL};
 static const char *webcmd[] = {"firefox", NULL};
-static const char *filescmd[] = {"st", "-e", "nnn", NULL};
+static const char *filescmd[] = {"st", "-e", "lf", NULL};
 
 /*First arg only serves to match against key in rules*/
 static const char *sptermcmd[] = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL};
