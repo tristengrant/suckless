@@ -99,11 +99,11 @@ struct Client {
 	int bw, oldbw;
 	unsigned int tags;
 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, isterminal, noswallow;
-	pid_t pid;
+  pid_t pid;
 	char scratchkey;
 	Client *next;
 	Client *snext;
-	Client *swallowing;
+  Client *swallowing;
 	Monitor *mon;
 	Window win;
 };
@@ -225,10 +225,10 @@ static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
 static void sigstatusbar(const Arg *arg);
+static void spawn(const Arg *arg);
 static int solitary(Client *c);
 static void sighup(int unused);
 static void sigterm(int unused);
-static void spawn(const Arg *arg);
 static void spawnscratch(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -300,7 +300,7 @@ static Cur *cursor[CurLast];
 static Clr **scheme;
 static Display *dpy;
 static Drw *drw;
-static Monitor *mons, *selmon;
+static Monitor *mons, *selmon, *statmon;
 static Window root, wmcheckwin;
 
 static xcb_connection_t *xcon;
@@ -867,7 +867,7 @@ drawbar(Monitor *m)
 		return;
 
 	/* draw status first so it can be overdrawn by tags later */
-	if (m == &mons[mainmon]) { /* status is only drawn on main monitor */
+	if (m == statmon) { /* status is only drawn on user-defined status monitor */
 		char *text, *s, ch;
 		drw_setscheme(drw, scheme[SchemeNorm]);
 
@@ -1301,26 +1301,25 @@ manage(Window w, XWindowAttributes *wa)
 	updatewindowtype(c);
 	updatesizehints(c);
 	updatewmhints(c);
-	{
-		int format;
-		unsigned long *data, n, extra;
-		Monitor *m;
-		Atom atom;
-		if (XGetWindowProperty(dpy, c->win, netatom[NetClientInfo], 0L, 2L, False, XA_CARDINAL,
-				&atom, &format, &n, &extra, (unsigned char **)&data) == Success && n == 2) {
-			c->tags = *data;
-			for (m = mons; m; m = m->next) {
-				if (m->num == *(data+1)) {
-					c->mon = m;
-					break;
-				}
-			}
-		}
-		if (n > 0)
-			XFree(data);
-	}
-	setclienttagprop(c);
-
+  {
+  int format;
+  unsigned long *data, n, extra;
+  Monitor *m;
+  Atom atom;
+  if (XGetWindowProperty(dpy, c->win, netatom[NetClientInfo], 0L, 2L, False, XA_CARDINAL,
+    &atom, &format, &n, &extra, (unsigned char **)&data) == Success && n == 2) {
+     c->tags = *data;
+       for (m = mons; m; m = m->next) {
+         if (m->num == *(data+1)) {
+           c->mon = m;
+           break;
+      }
+    }
+  }
+  if (n > 0)
+    XFree(data);
+  }
+  setclienttagprop(c);
 	c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
 	c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
 	XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
@@ -1957,20 +1956,6 @@ solitary(Client *c)
 }
 
 void
-sigstatusbar(const Arg *arg)
-{
-	union sigval sv;
-
-	if (!statussig)
-		return;
-	sv.sival_int = arg->i;
-	if ((statuspid = getstatusbarpid()) <= 0)
-		return;
-
-	sigqueue(statuspid, SIGRTMIN+statussig, sv);
-}
-
-void
 sighup(int unused)
 {
 	Arg a = {.i = 1};
@@ -1982,6 +1967,20 @@ sigterm(int unused)
 {
 	Arg a = {.i = 0};
 	quit(&a);
+}
+
+void
+sigstatusbar(const Arg *arg)
+{
+	union sigval sv;
+
+	if (!statussig)
+		return;
+	sv.sival_int = arg->i;
+	if ((statuspid = getstatusbarpid()) <= 0)
+		return;
+
+	sigqueue(statuspid, SIGRTMIN+statussig, sv);
 }
 
 void
@@ -2330,7 +2329,7 @@ updategeom(void)
 			else
 				mons = createmon();
 		}
-		for (i = 0, m = mons; i < nn && m; m = m->next, i++)
+    for (i = 0, m = mons; i < nn && m; m = m->next, i++){
 			if (i >= n
 			|| unique[i].x_org != m->mx || unique[i].y_org != m->my
 			|| unique[i].width != m->mw || unique[i].height != m->mh)
@@ -2343,6 +2342,10 @@ updategeom(void)
 				m->mh = m->wh = unique[i].height;
 				updatebarpos(m);
 			}
+      if(i == statmonval)
+        statmon = m;
+      }
+
 		/* removed monitors if n > nn */
 		for (i = nn; i < n; i++) {
 			for (m = mons; m && m->next; m = m->next);
@@ -2351,14 +2354,16 @@ updategeom(void)
 				m->clients = c->next;
 				detachstack(c);
 				c->mon = mons;
-					if( attachbelow )
-						attachBelow(c);
-					else
-						attach(c);
+				if ( attachbelow )
+          attachBelow(c);
+        else
+          attach(c);
 				attachstack(c);
 			}
 			if (m == selmon)
 				selmon = mons;
+      if (m == statmon)
+        statmon = mons;
 			cleanupmon(m);
 		}
 		free(unique);
@@ -2463,7 +2468,7 @@ updatestatus(void)
 		statusw += TEXTW(text) - lrpad + 2;
 
 	}
-	drawbar(selmon);
+	drawbar(statmon);
 }
 
 void
