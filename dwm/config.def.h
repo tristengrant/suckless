@@ -89,24 +89,24 @@ static const Key keys[] = {
 	/* modifier                     key                       function        argument */
 	{ MODKEY,                       XK_r,                     spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return,                spawn,          {.v = termcmd } },
-    { MODKEY,                       XK_b,                     spawn,          {.v = webcmd}},
-    { MODKEY,                       XK_f,                     spawn,          {.v = filescmd}},
-    { MODKEY|ShiftMask,             XK_Return,                togglescratch,  {.v = sptermcmd}}, /* terminal scratchpad */
-    { MODKEY|ShiftMask,             XK_m,                     togglescratch,  {.v = spncmpcppcmd}}, /* ncmpcpp scratchpad */ 
+  { MODKEY,                       XK_b,                     spawn,          {.v = webcmd}},
+  { MODKEY,                       XK_f,                     spawn,          {.v = filescmd}},
+  { MODKEY|ShiftMask,             XK_Return,                togglescratch,  {.v = sptermcmd}}, /* terminal scratchpad */
+  { MODKEY|ShiftMask,             XK_m,                     togglescratch,  {.v = spncmpcppcmd}}, /* ncmpcpp scratchpad */ 
 	{ MODKEY|ControlMask,           XK_b,                     togglebar,      {0} },
 	{ MODKEY,                       XK_j,                     focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,                     focusstack,     {.i = -1 } }, 
-    { MODKEY,                       XK_i,                     incnmaster,     {.i = +1 } },
-    { MODKEY,                       XK_d,                     incnmaster,     {.i = -1 } },
+  { MODKEY,                       XK_i,                     incnmaster,     {.i = +1 } },
+  { MODKEY,                       XK_d,                     incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,                     setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,                     setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,                     movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,                     movestack,      {.i = -1 } },
-    { MODKEY,                       XK_z,                     zoom,           {0} },
-    { MODKEY,                       XK_Tab,                   view,           {0} },
+  { MODKEY,                       XK_z,                     zoom,           {0} },
+  { MODKEY,                       XK_Tab,                   view,           {0} },
 	{ MODKEY,                       XK_q,                     killclient,     {0} },
 	{ MODKEY,                       XK_t,                     setlayout,      {.v = &layouts[0]} },
-    { MODKEY|ControlMask,           XK_f,                     setlayout,      {.v = &layouts[1]} },
+  { MODKEY|ControlMask,           XK_f,                     setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,                     setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,                 setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,                 togglefloating, {0} },
