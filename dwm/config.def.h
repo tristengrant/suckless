@@ -96,6 +96,7 @@ static const char *sptermcmd[] = {"t",  "st",     "-t", "scratchpad",
                                   "-g", "144x41", NULL};
 static const char *spncmpcppcmd[] = {"m",      "st", "-t",      "ncmpcpp", "-g",
                                      "144x41", "-e", "ncmpcpp", NULL};
+static const char *qalc_cmd[] = {"dmenu", "-C", "-p", "qalc:", NULL};
 
 #include "exitdwm.c"
 #include "movestack.c"
@@ -148,6 +149,7 @@ static const Key keys[] = {
     {MODKEY | ShiftMask, XK_l, spawn, SHCMD("slock")},
     {MODKEY | ShiftMask, XK_p, spawn,
      SHCMD("~/Projects/scripts/colourpicker.sh")},
+    {MODKEY | ShiftMask, XK_c, spawn, {.v = qalc_cmd}},
     {0, XF86XK_MonBrightnessUp, spawn, SHCMD("brightnessctl set +10%")},
     {0, XF86XK_MonBrightnessDown, spawn, SHCMD("brightnessctl set 10%-")},
     {MODKEY, XK_F1, spawn, SHCMD("~/Projects/scripts/volume.sh mute")},
