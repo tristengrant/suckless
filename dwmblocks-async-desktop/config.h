@@ -18,7 +18,7 @@
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
 #define BLOCKS(X)             \
-    X("", "sb_music", 0, 2)   \
+    X("", "sb_music", 1, 2)   \
     X("", "sb_disk", 1800, 3) \
     X("", "sb_date", 60, 10)
 

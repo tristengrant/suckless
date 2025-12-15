@@ -153,6 +153,10 @@ static const Key keys[] = {
     {MODKEY, XK_F1, spawn, SHCMD("~/Projects/scripts/volume.sh mute")},
     {MODKEY, XK_F2, spawn, SHCMD("~/Projects/scripts/volume.sh down")},
     {MODKEY, XK_F3, spawn, SHCMD("~/Projects/scripts/volume.sh up")},
+    {0, XF86XK_AudioPlay, spawn, SHCMD("mpc toggle")},
+    {0, XF86XK_AudioPrev, spawn, SHCMD("mpc prev")},
+    {0, XF86XK_AudioNext, spawn, SHCMD("mpc next")},
+    {0, XF86XK_AudioStop, spawn, SHCMD("mpc stop")},
     TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
         TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
             TAGKEYS(XK_9, 8){MODKEY | ShiftMask, XK_q, exitdwm, {0}},
