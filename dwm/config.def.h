@@ -40,7 +40,9 @@ static const Rule rules[] = {
     {"Firefox", NULL, NULL, 0, 0, 0, -1, -1, 0},
     {"St", NULL, NULL, 0, 0, 1, 1, -1, 0},
     {"mpv", NULL, NULL, 0, 0, 0, 0, -1, 0},
+    {"nsxiv", NULL, NULL, 0, 0, 0, 0, -1, 0},
     {"sxiv", NULL, NULL, 0, 0, 0, 0, -1, 0},
+    {"feh", NULL, NULL, 0, 0, 0, 0, -1, 0},
     {NULL, NULL, "scratchpad", 0, 1, 1, 1, -1, 't'},
     {NULL, NULL, "ncmpcpp", 0, 1, 1, 1, -1, 'm'},
     {NULL, NULL, "Event Tester", 0, 0, 0, 1, -1, 0}, /* xev */
