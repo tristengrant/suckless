@@ -1,5 +1,5 @@
 # Suckless Software
-This is the Suckless.org software I use for my Linux systems. I'm also using dwmblocks-async which has different builds for my laptop and desktop setup.
+This is the Suckless.org (and similarly inspired) software I use for my Linux systems. I'm also using dwmblocks-async which has different builds for my laptop and desktop setup.
 ## DWM 6.6 Patches
 1. dwm-fixborders-6.2.diff
 2. dwm-fixmultimon-6.4.diff
@@ -20,10 +20,10 @@ This is the Suckless.org software I use for my Linux systems. I'm also using dwm
 17. dwm-exitmenu-6.3.diff
 ## Dmenu
 1. dmenu-qalc-5.3.diff
-# Slock
+## Slock
 1. slock-capscolor-20220921-35633d4.diff
 2. slock-git-20161012-control-clear.diff
-# St 0.8.5
+## St 0.8.5
 1. st-anysize-20220718-baa9357.diff
 2. st-charoffsets-20220311-0.8.5.diff
 3. st-bold-is-not-bright-20190127-3be4cf1.diff
@@ -36,3 +36,6 @@ This is the Suckless.org software I use for my Linux systems. I'm also using dwm
 10. st-desktopentry-0.8.5.diff
 11. st-hidecursor-0.8.3.diff
 12. st-vertcenter-20231003-eb3b894.diff
+
+## Nsxiv
+No patches applied.

@@ -96,7 +96,7 @@ static const char *sptermcmd[] = {"t",  "st",     "-t", "scratchpad",
                                   "-g", "144x41", NULL};
 static const char *spncmpcppcmd[] = {"m",      "st", "-t",      "ncmpcpp", "-g",
                                      "144x41", "-e", "ncmpcpp", NULL};
-static const char *qalc_cmd[] = {"dmenu", "-C", "-p", "qalc:", NULL};
+static const char *qalc_cmd[] = {"dmenu", "-C", "-p", "Qalc:", NULL};
 
 #include "exitdwm.c"
 #include "movestack.c"
