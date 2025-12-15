@@ -40,3 +40,4 @@ No patches applied yet.
 7. st-externalpipe-0.8.5.diff
 8. st-externalpipe-eternal-0.8.3.diff
 9. st-delkey-20201112-4ef0cbd.diff
+10. st-desktopentry-0.8.5.diff
