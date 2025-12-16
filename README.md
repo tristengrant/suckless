@@ -16,11 +16,8 @@ This is the Suckless.org (and similarly inspired) software I use for my Linux sy
 14. dwm-restartsig-20180523-6.2.diff
 15. dwm-statuscmd-20241009-8933ebc.diff
 17. dwm-exitmenu-6.3.diff
-<<<<<<< HEAD
-18. dwm-focusonnetactive-2017-12-24-3756f7f.diff
-=======
 16. dwm-statusallmons-6.5.diff
->>>>>>> ac6c539aea433786a70200324a96e6580c52aafb
+18. dwm-focusonnetactive-2017-12-24-3756f7f.diff
 ## Dmenu
 1. dmenu-qalc-5.3.diff
 ## Slock
