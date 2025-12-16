@@ -2155,20 +2155,15 @@ unmanage(Client *c, int destroyed)
 void
 unmapnotify(XEvent *e)
 {
-    Client *c;
-    XUnmapEvent *ev = &e->xunmap;
-    XWindowAttributes wa;
+	Client *c;
+	XUnmapEvent *ev = &e->xunmap;
 
-    if ((c = wintoclient(ev->window))) {
-        if (ev->send_event)
-            setclientstate(c, WithdrawnState);
-        else
-            unmanage(c, 0);
-    } else if (XGetWindowAttributes(dpy, ev->window, &wa) && wa.override_redirect) {
-        /* Handle override-redirect windows (like Krita on-canvas color selector) */
-        if (selmon->sel)
-            focus(selmon->sel);
-    }
+	if ((c = wintoclient(ev->window))) {
+		if (ev->send_event)
+			setclientstate(c, WithdrawnState);
+		else
+			unmanage(c, 0);
+	}
 }
 
 void
