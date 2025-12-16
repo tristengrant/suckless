@@ -84,7 +84,7 @@ static const Key keys[] = {
   { MODKEY,                       XK_f,      spawn,          {.v = filescmd } },
   { MODKEY|ShiftMask,             XK_Return, togglescratch,  {.v = sptermcmd } }, /* terminal scratchpad */
   { MODKEY|ShiftMask,             XK_m,      togglescratch,  {.v = spncmpcppcmd } }, /* ncmpcpp scratchpad */
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ControlMask,           XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 /*{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },*/
