@@ -21,7 +21,7 @@ This is the Suckless.org software I use for my Linux systems. I'm also using dwm
 15. dwm-statuscmd-20241009-8933ebc.diff
 16. dwm-staticstatus-6.2.diff
 17. dwm-exitmenu-6.3.diff
-
+18. dwm-focusonnetactive-2017-12-24-3756f7f.diff
 ## Dmenu
 
 No patches applied yet.
