@@ -10,14 +10,13 @@ This is the Suckless.org (and similarly inspired) software I use for my Linux sy
 7. dwm-cursorwarp-stackonly-20210222-61bb8b2.diff
 8. dwm-focusmaster-return-6.2.diff
 9. dwm-namedscratchpads-6.5.diff
-10. dwm-swallow-6.3.diff
 11. dwm-resizecorners-6.5.diff
 12. dwm-noborderselflickerfix-2022042627-d93ff48803f0.diff
 13. dwm-preserveonrestart-6.3.diff
 14. dwm-restartsig-20180523-6.2.diff
 15. dwm-statuscmd-20241009-8933ebc.diff
-16. dwm-staticstatus-6.2.diff
 17. dwm-exitmenu-6.3.diff
+16. dwm-statusallmons-6.5.diff
 ## Dmenu
 1. dmenu-qalc-5.3.diff
 ## Slock
@@ -36,6 +35,5 @@ This is the Suckless.org (and similarly inspired) software I use for my Linux sy
 10. st-desktopentry-0.8.5.diff
 11. st-hidecursor-0.8.3.diff
 12. st-vertcenter-20231003-eb3b894.diff
-
 ## Nsxiv
 No patches applied.
