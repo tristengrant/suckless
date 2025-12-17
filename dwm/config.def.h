@@ -18,9 +18,6 @@ static const char *colors[][3]      = {
 	[SchemeSel]  = { col_gray4, col_gray1, col_gray3 },
 };
 
-/* Add sloppy to fix bug with qt and DWM */
-static const int sloppyfocus = 1;
-
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
@@ -32,7 +29,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor    scratch key */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1,        0  },
 	{ "firefox",  NULL,       NULL,       0,            0,           -1,        0  },
-  { NULL,       NULL,   "scratchpad",   0,            1,           -1,       't' },
+	{ NULL,       NULL,   "scratchpad",   0,            1,           -1,       't' },
   { NULL,       NULL,   "ncmpcpp",      0,            1,           -1,       'm' },
 };
 
@@ -71,14 +68,13 @@ static const char *termcmd[]  = { "st", NULL };
 static const char *webcmd[] = {"firefox", NULL};
 static const char *filescmd[] = {"st", "-e", "lf", NULL};
 
-#include "movestack.c"
-#include "exitdwm.c"
-
 /*First arg only serves to match against key in rules*/
 static const char *sptermcmd[] = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL};
 static const char *spncmpcppcmd[] = {"m", "st", "-t", "ncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL};
 static const char *qalc_cmd[] = {"dmenu", "-C", "-p", "Qalc:", NULL};
 
+#include "movestack.c"
+#include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -96,11 +92,11 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+/*{ MODKEY,                       XK_Return, zoom,           {0} },*/
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY|ControlMask,           XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
