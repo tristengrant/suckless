@@ -28,7 +28,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor    scratch key */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1,        0  },
-	{ "firefox",  NULL,       NULL,       0,            0,           -1,        0  },
+	{ "librewolf",  NULL,       NULL,       0,            0,           -1,        0  },
 	{ NULL,       NULL,   "scratchpad",   0,            1,           -1,       't' },
   { NULL,       NULL,   "ncmpcpp",      0,            1,           -1,       'm' },
 };
@@ -65,7 +65,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *webcmd[] = {"firefox", NULL};
+static const char *webcmd[] = {"librewolf", NULL};
 static const char *filescmd[] = {"st", "-e", "lf", NULL};
 
 /*First arg only serves to match against key in rules*/
