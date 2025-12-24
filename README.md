@@ -21,18 +21,15 @@ This is the Suckless.org (and similarly inspired) software I use for my Linux sy
 ## Slock
 1. slock-capscolor-20220921-35633d4.diff
 2. slock-git-20161012-control-clear.diff
-## St 0.8.5
+## St
 1. st-anysize-20220718-baa9357.diff
 2. st-charoffsets-20220311-0.8.5.diff
 3. st-bold-is-not-bright-20190127-3be4cf1.diff
 4. st-font2-0.8.5.diff
-5. st-scrollback-0.8.5.diff
-6. st-scrollback-reflow-0.8.5.diff
-7. st-externalpipe-0.8.5.diff
-8. st-externalpipe-eternal-0.8.3.diff
+5. st-clickurl-0.8.5.diff
 9. st-delkey-20201112-4ef0cbd.diff
-10. st-desktopentry-0.8.5.diff
-11. st-hidecursor-0.8.3.diff
-12. st-vertcenter-20231003-eb3b894.diff
+8. st-desktopentry-0.8.5.diff
+9. st-hidecursor-0.8.3.diff
+1. st-vertcenter-20231003-eb3b894.diff
 ## Nsxiv
 No patches applied.

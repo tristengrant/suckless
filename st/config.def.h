@@ -7,7 +7,7 @@
  */
 static char *font = "JetBrainsMono Nerd Font:pixelsize=18:antialias=true:autohint=true";
 /* Spare fonts */
-static char *font2[] = {"Font Awesome:pixelsize=18:antialias=true:autohint=true",};
+static char *font2[] = {"Font Awesome:pixelsize=18:antialias=true:autohint=true"};
 
 static int borderpx = 2;
 
@@ -59,7 +59,7 @@ int allowwindowops = 0;
  * near minlatency, but it waits longer for slow updates to avoid partial draw.
  * low minlatency will tear/flicker more, as it can "detect" idle too early.
  */
-static double minlatency = 8;
+static double minlatency = 2;
 static double maxlatency = 33;
 
 /*
@@ -99,6 +99,8 @@ char *termname = "st-256color";
  */
 unsigned int tabspaces = 8;
 
+/* Terminal colors (16 first used in escape sequence) */
+
 static const char *colorname[] = {
     /* 0–7 normal colors */
     [0] = "#0e0e0f",  // black (Alabaster bg0 — very dark)
@@ -136,6 +138,7 @@ unsigned int defaultrcs = 256;
  * 6: Bar ("|")
  * 7: Snowman ("☃")
  */
+
 static unsigned int cursorshape = 2;
 
 /*
@@ -182,11 +185,6 @@ static MouseShortcut mshortcuts[] = {
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
-/* point directly at the scripts inside the dmenu/ directory */
-static char *openurlcmd[]  = { "/home/tristen/Projects/scripts/dmenu/st-urlhandler", "-o", NULL };
-static char *copyurlcmd[]  = { "/home/tristen/Projects/scripts/dmenu/st-urlhandler", "-c", NULL };
-static char *copyoutput[]  = { "/home/tristen/Projects/scripts/dmenu/st-copyout", NULL };
-
 static Shortcut shortcuts[] = {
 	/* mask                 keysym          function        argument */
 	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
@@ -201,17 +199,6 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
-	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
-  { MODKEY,               XK_k,           kscrollup,      {.i =  1} },
-  { MODKEY,               XK_j,           kscrolldown,    {.i =  1} },
-  { MODKEY,               XK_Up,          kscrollup,      {.i =  1} },
-  { MODKEY,               XK_Down,        kscrollup,      {.i =  1} },
-  { MODKEY,               XK_u,           kscrollup,      {.i =  -1} },
-  { MODKEY,               XK_d,           kscrolldown,    {.i =  -1} },
-  { MODKEY, XK_l, externalpipe, {.v = openurlcmd } },
-{ MODKEY, XK_y, externalpipe, {.v = copyurlcmd } },
-{ MODKEY, XK_o, externalpipe, {.v = copyoutput } },
 };
 
 /*
@@ -483,3 +470,14 @@ static char ascii_printable[] =
 	" !\"#$%&'()*+,-./0123456789:;<=>?"
 	"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
 	"`abcdefghijklmnopqrstuvwxyz{|}~";
+
+/*
+ * Open urls starting with urlprefixes, contatining urlchars
+ * by passing as ARG1 to urlhandler.
+ */
+char* urlhandler = "xdg-open";
+char urlchars[] =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	"abcdefghijklmnopqrstuvwxyz"
+	"0123456789-._~:/?#@!$&'*+,;=%";
+char* urlprefixes[] = {"http://", "https://", NULL};
