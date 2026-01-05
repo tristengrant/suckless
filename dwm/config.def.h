@@ -26,11 +26,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor    scratch key */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1,        0  },
-	{ "librewolf",  NULL,       NULL,       0,            0,           -1,        0  },
-	{ NULL,       NULL,   "scratchpad",   0,            1,           -1,       't' },
-  { NULL,       NULL,   "ncmpcpp",      0,            1,           -1,       'm' },
+	/* class       instance    title       tags mask     isfloating   monitor    scratch key */
+	{ "Gimp",      NULL,       NULL,       0,            1,           -1,        0  },
+	{ "librewolf", NULL,       NULL,       0,            0,           -1,        0  },
+	{ NULL,        NULL,   "scratchpad",   0,            1,           -1,       't' },
+  { NULL,        NULL,   "ncmpcpp",      0,            1,           -1,       'm' },
+	{ NULL,        NULL,   "nvim",         0,            1,           -1,       'n' },
 };
 
 /* layout(s) */
@@ -65,24 +66,27 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *webcmd[] = {"librewolf", NULL};
-static const char *filescmd[] = {"st", "-e", "lf", NULL};
+static const char *webcmd[] = {"librewolf", NULL };
+static const char *filescmd[] = {"st", "-e", "lf", NULL };
 
 /*First arg only serves to match against key in rules*/
-static const char *sptermcmd[] = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL};
-static const char *spncmpcppcmd[] = {"m", "st", "-t", "ncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL};
+static const char *sptermcmd[] = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL };
+static const char *spncmpcppcmd[] = {"m", "st", "-t", "ncmpcpp", "-g", "144x41", "-e", "ncmpcpp", NULL };
+static const char *spdailynotecmd[] = {"n", "st", "-t", "nvim", "-g", "144x41", "-e", "nvim", NULL };
 static const char *qalc_cmd[] = {"dmenu", "-C", "-p", "Qalc:", NULL};
 
 #include "movestack.c"
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+/*{ MODKEY,                       XK_Return, spawn,          {.v = tabtermcmd } },*/
 	{ MODKEY,                       XK_b,      spawn,          {.v = webcmd } },
   { MODKEY,                       XK_f,      spawn,          {.v = filescmd } },
   { MODKEY|ShiftMask,             XK_Return, togglescratch,  {.v = sptermcmd } }, /* terminal scratchpad */
   { MODKEY|ShiftMask,             XK_m,      togglescratch,  {.v = spncmpcppcmd } }, /* ncmpcpp scratchpad */
+  { MODKEY|ShiftMask,             XK_n,      togglescratch,  {.v = spdailynotecmd } }, /* ncmpcpp scratchpad */
 	{ MODKEY|ControlMask,           XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
