@@ -27,15 +27,18 @@ This is the Suckless.org (and similarly inspired) software I use for my Linux sy
 1. [slock-capscolor-20220921-35633d4.diff](https://tools.suckless.org/slock/patches/capscolor/)
 2. [slock-git-20161012-control-clear.diff](https://tools.suckless.org/slock/patches/control-clear/)
 
-## St
+## St 0.9.3
 1. [st-anysize-20220718-baa9357.diff](https://st.suckless.org/patches/anysize/)
-2. [st-charoffsets-20220311-0.8.5.diff](https://st.suckless.org/patches/charoffsets/)
-3. [st-bold-is-not-bright-20190127-3be4cf1.diff](https://st.suckless.org/patches/bold-is-not-bright/)
-4. [st-font2-0.8.5.diff](https://st.suckless.org/patches/font2/)
-9. [st-delkey-20201112-4ef0cbd.diff](https://st.suckless.org/patches/delkey/)
-8. [st-desktopentry-0.8.5.diff](https://st.suckless.org/patches/desktopentry/)
-9. [st-hidecursor-0.8.3.diff](https://st.suckless.org/patches/hidecursor/)
-10. [st-vertcenter-20231003-eb3b894.diff](https://st.suckless.org/patches/vertcenter/)
+2. [st-bold-is-not-bright-20190127-3be4cf1.diff](https://st.suckless.org/patches/bold-is-not-bright/)
+3. [st-delkey-20201112-4ef0cbd.diff](https://st.suckless.org/patches/delkey/)
+4. [st-desktopentry-0.8.5.diff](https://st.suckless.org/patches/desktopentry/)
+5. [st-hidecursor-0.8.3.diff](https://st.suckless.org/patches/hidecursor/)
+6. [st-clickurl-nocontrol-0.9.2.diff](https://st.suckless.org/patches/clickurl-nocontrol/)
+7. [st-clipboard-0.8.3.diff](https://st.suckless.org/patches/clipboard/)
+8. [st-scrollback-0.9.2.diff](https://st.suckless.org/patches/scrollback/)
+9. [st-scrollback-reflow-0.9.2.diff](https://st.suckless.org/patches/scrollback/)
+10. [st-scrollback-mouse-0.9.2.diff](https://st.suckless.org/patches/scrollback/)
+11. [st-scrollback-mouse-altscreen-20220127-2c5edf2.diff](https://st.suckless.org/patches/scrollback/)
 
 ## Nsxiv
 No patches applied.
