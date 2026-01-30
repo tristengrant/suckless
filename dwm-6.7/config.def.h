@@ -18,6 +18,9 @@ static const char *colors[][3]      = {
 	[SchemeSel]  = { col_gray4, col_gray1, col_gray3 },
 };
 
+/* staticstatus */
+static const int statmonval = 0;
+
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
@@ -26,21 +29,21 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class       instance    title       tags mask     isfloating   monitor    scratch key */
-	{ "Gimp",      NULL,       NULL,       0,            1,           -1,        0  },
-	{ "Firefox",   NULL,       NULL,       0,            0,           -1,        0  },
-	{ NULL,        NULL,   "scratchpad",   0,            1,           -1,       't' },
-  { NULL,        NULL,   "ncmpcpp",      0,            1,           -1,       'm' },
-	{ NULL,        NULL,   "nvim",         0,            1,           -1,       'n' },
+	/* class      instance    title       tags mask     isfloating   monitor    scratch key */
+	{ "Gimp",     NULL,       NULL,       0,            1,           -1,        0  },
+	{ "firefox",  NULL,       NULL,       0,            0,           -1,        0  },
+	{ NULL,        NULL,   "scratchpad",   0,           1,           -1,       't' },
+  { NULL,        NULL,   "ncmpcpp",      0,           1,           -1,       'm' },
+	{ NULL,        NULL,   "nvim",         0,           1,           -1,       'n' },
 };
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int attachbelow = 1;    /* 1 means attach after the currently active window */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
-static const int attachbelow = 1;    /* 1 means attach after the currently active window */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -65,9 +68,9 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray1, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "wezterm", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 static const char *webcmd[] = {"firefox", NULL };
-static const char *filescmd[] = {"wezterm", "-e", "lf", NULL };
+static const char *filescmd[] = {"alacritty", "-e", "lf", NULL };
 
 /*First arg only serves to match against key in rules*/
 static const char *sptermcmd[] = {"t", "st", "-t", "scratchpad", "-g", "144x41", NULL };
@@ -81,7 +84,6 @@ static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-/*{ MODKEY,                       XK_Return, spawn,          {.v = tabtermcmd } },*/
 	{ MODKEY,                       XK_b,      spawn,          {.v = webcmd } },
   { MODKEY,                       XK_f,      spawn,          {.v = filescmd } },
   { MODKEY|ShiftMask,             XK_Return, togglescratch,  {.v = sptermcmd } }, /* terminal scratchpad */
@@ -146,10 +148,10 @@ static const Button buttons[] = {
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
+	{ ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
+  { ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
+  { ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6} },
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
-	{ ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4 } },
-  { ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5 } },
-  { ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6 } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
