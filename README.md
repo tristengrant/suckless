@@ -1,7 +1,7 @@
 # Suckless Software
 This is the Suckless.org (and similarly inspired) software I use for my Linux systems. I'm also using dwmblocks-async which has different builds for my laptop and desktop setup.
 
-## DWM 6.7 Patches
+## DWM 6.8 Patches
 1. [dwm-fixborders-6.2.diff](https://dwm.suckless.org/patches/alpha/)
 2. [dwm-fixmultimon-6.4.diff](https://dwm.suckless.org/patches/fixmultimon/)
 3. [dwm-pertag-20200914-61bb8b2.diff](https://dwm.suckless.org/patches/pertag/)

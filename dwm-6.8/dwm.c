@@ -214,12 +214,12 @@ static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
-static void sigstatusbar(const Arg *arg);
-static void spawn(const Arg *arg);
 static int solitary(Client *c);
+static void spawn(const Arg *arg);
 static void sighup(int unused);
 static void sigterm(int unused);
 static void spawnscratch(const Arg *arg);
+static void sigstatusbar(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
@@ -1002,13 +1002,13 @@ Atom
 getatomprop(Client *c, Atom prop)
 {
 	int di;
-	unsigned long dl;
+	unsigned long nitems, dl;
 	unsigned char *p = NULL;
 	Atom da, atom = None;
 
 	if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, False, XA_ATOM,
-		&da, &di, &dl, &dl, &p) == Success && p) {
-		if (dl > 0)
+		&da, &di, &nitems, &dl, &p) == Success && p) {
+		if (nitems > 0)
 			atom = *(Atom *)p;
 		XFree(p);
 	}
@@ -2245,7 +2245,7 @@ updategeom(void)
 			else
 				mons = createmon();
 		}
-		for (i = 0, m = mons; i < nn && m; m = m->next, i++) {
+			for (i = 0, m = mons; i < nn && m; m = m->next, i++){
 			if (i >= n
 			|| unique[i].x_org != m->mx || unique[i].y_org != m->my
 			|| unique[i].width != m->mw || unique[i].height != m->mh)
@@ -2258,9 +2258,9 @@ updategeom(void)
 				m->mh = m->wh = unique[i].height;
 				updatebarpos(m);
 			}
-			if(i == statmonval)
-				statmon = m;
-		}
+				if(i == statmonval)
+					statmon = m;
+			}
 
 		/* removed monitors if n > nn */
 		for (i = nn; i < n; i++) {
@@ -2269,11 +2269,11 @@ updategeom(void)
 				dirty = 1;
 				m->clients = c->next;
 				detachstack(c);
-				c->mon = mons;
-				if( attachbelow )
-					attachBelow(c);
-				else
-					attach(c);
+					if( attachbelow )
+						attachBelow(c);
+					else
+						attach(c);
+				attach(c);
 				attachstack(c);
 			}
 			if (m == selmon)
